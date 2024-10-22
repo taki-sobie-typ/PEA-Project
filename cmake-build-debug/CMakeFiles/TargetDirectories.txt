@@ -1,0 +1,3 @@
+C:/Users/Patryk/CLionProjects/PEA_Project/cmake-build-debug/CMakeFiles/PEA_Project.dir
+C:/Users/Patryk/CLionProjects/PEA_Project/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Patryk/CLionProjects/PEA_Project/cmake-build-debug/CMakeFiles/rebuild_cache.dir

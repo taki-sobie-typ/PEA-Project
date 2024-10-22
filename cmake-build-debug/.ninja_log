@@ -1,0 +1,12 @@
+# ninja log v6
+3	728	7510498251627483	CMakeFiles/PEA_Project.dir/main.cpp.obj	efd68a5ee2599a0a
+17	393	7513293813082140	build.ninja	e47494eefaebfb16
+51	1006	7510498720346017	CMakeFiles/PEA_Project.dir/source/MacierzIncydencji.cpp.obj	29d022e7624d01cd
+19	1073	7510498720035258	CMakeFiles/PEA_Project.dir/source/CzytnikGrafow.cpp.obj	9cf88142b20870d2
+31	232	7510498720150427	CMakeFiles/PEA_Project.dir/source/GeneratorGrafow.cpp.obj	4eebcabe1ea379ca
+43	960	7510498720270759	CMakeFiles/PEA_Project.dir/source/ListaSasiedztwa.cpp.obj	1dcbcffc06fa740f
+37	1007	7510498720205610	CMakeFiles/PEA_Project.dir/source/GrafManager.cpp.obj	ea5f9253107d2819
+58	1054	7510498720421309	CMakeFiles/PEA_Project.dir/source/Menu.cpp.obj	c16e0ec61f9b536a
+25	1764	7510498720090415	CMakeFiles/PEA_Project.dir/source/Dijkstra.cpp.obj	e223fee7f20b569d
+66	1808	7510498720506612	CMakeFiles/PEA_Project.dir/source/Prim.cpp.obj	bcaae4df76fa7ca7
+1808	2481	7510498737927526	PEA_Project.exe	37359a3ee28608f1
