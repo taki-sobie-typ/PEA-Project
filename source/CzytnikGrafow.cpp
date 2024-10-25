@@ -1,55 +1,31 @@
 #include "../header/CzytnikGrafow.h"
+#include <iostream>
 #include <fstream>
 
 using namespace std;
 
 CzytnikGrafow::CzytnikGrafow(string sciezkaBazowa) : sciezkaBazowa(sciezkaBazowa) {}
 
-MacierzIncydencji* CzytnikGrafow::wczytajMacierz(string nazwaPliku) {
-    size_t liczbaKrawedzi, liczbaWierzcholkow;
-    size_t* dane;
-
-    if (!this->wczytajDane(nazwaPliku, liczbaKrawedzi, liczbaWierzcholkow, dane)) {
-        return nullptr;
-    }
-
-    MacierzIncydencji* macierz = new MacierzIncydencji(liczbaKrawedzi, liczbaWierzcholkow, dane);
-
-    delete[] dane;
-
-    return macierz;
-}
-
-ListaSasiedztwa* CzytnikGrafow::wczytajListe(string nazwaPliku) {
-    size_t liczbaKrawedzi, liczbaWierzcholkow;
-    size_t* dane;
-
-    if (!this->wczytajDane(nazwaPliku, liczbaKrawedzi, liczbaWierzcholkow, dane)) {
-        return nullptr;
-    }
-
-    ListaSasiedztwa* lista = new ListaSasiedztwa(liczbaKrawedzi, liczbaWierzcholkow, dane);
-
-    delete[] dane;
-
-    return lista;
-}
-
-bool CzytnikGrafow::wczytajDane(string nazwaPliku, size_t& liczbaKrawedzi, size_t& liczbaWierzcholkow, size_t*& dane) {
+int** CzytnikGrafow::wczytajMacierz(string nazwaPliku, size_t& liczbaMiast) {
     ifstream plik(this->sciezkaBazowa + nazwaPliku);
 
     if (plik.fail()) {
-        return false;
+        cerr << "Nie można otworzyć pliku!" << endl;
+        return nullptr;
     }
 
-    plik >> liczbaKrawedzi >> liczbaWierzcholkow;
+    // Wczytaj liczbę miast
+    plik >> liczbaMiast;
 
-    size_t rozmiarDanych = liczbaKrawedzi * 3;
-    dane = new size_t[rozmiarDanych];
-
-    for (size_t i = 0; i < rozmiarDanych; i++) {
-        plik >> dane[i];
+    // Tworzymy macierz kosztów (domyślnie zainicjalizowaną na -1)
+    int** macierz = new int*[liczbaMiast];
+    for (size_t i = 0; i < liczbaMiast; ++i) {
+        macierz[i] = new int[liczbaMiast];
+        for (size_t j = 0; j < liczbaMiast; ++j) {
+            plik >> macierz[i][j];
+        }
     }
 
-    return true;
+    plik.close();
+    return macierz;
 }

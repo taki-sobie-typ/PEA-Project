@@ -1,23 +1,20 @@
 #ifndef CZYTNIKGRAFOW_H
 #define CZYTNIKGRAFOW_H
 
-#include "MacierzIncydencji.h"
-#include "ListaSasiedztwa.h"
+#include "MacierzKosztow.h"
 #include <string>
 
 using namespace std;
 
 class CzytnikGrafow {
+private:
+    string sciezkaBazowa;
+
 public:
     CzytnikGrafow(string sciezkaBazowa);
 
-    MacierzIncydencji* wczytajMacierz(string nazwaPliku);
-    ListaSasiedztwa* wczytajListe(string nazwaPliku);
-
-private:
-    bool wczytajDane(string nazwaPliku, size_t& liczbaKrawedzi, size_t& liczbaWierzcholkow, size_t*& dane);
-
-    string sciezkaBazowa;
+    // Method to read and return the cost matrix
+    int** wczytajMacierz(string nazwaPliku, size_t& liczbaMiast);
 };
 
-#endif // CZYTNIKGRAFOW_H
+#endif // CZYTNIK_GRAFOW_H

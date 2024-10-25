@@ -14,19 +14,15 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(
         PEA_Project main.cpp
         source/CzytnikGrafow.cpp
-        source/Dijkstra.cpp
+        source/BruteForce.cpp
         source/GeneratorGrafow.cpp
         source/GrafManager.cpp
-        source/ListaSasiedztwa.cpp
-        source/MacierzIncydencji.cpp
+        source/MacierzKosztow.cpp
         source/Menu.cpp
-        source/Prim.cpp
         header/CzytnikGrafow.h
-        header/Dijkstra.h
+        header/BruteForce.h
         header/GeneratorGrafow.h
         header/GrafManager.h
-        header/ListaSasiedztwa.h
-        header/MacierzIncydencji.h
+        header/MacierzKosztow.h
         header/Menu.h
-        header/Prim.h
 )

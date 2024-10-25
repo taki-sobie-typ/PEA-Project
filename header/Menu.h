@@ -14,9 +14,7 @@ private:
     void wczytajDaneZPliku();
     void wygenerujGrafLosowo();
     void wyswietlGraf();
-    void uruchomAlgorytmMST();
-    void uruchomAlgorytmNajkrotszejSciezki();
-    void uruchomTestyDoSprawozdania();
+    void testBruteForce();
 
 public:
     Menu() {}

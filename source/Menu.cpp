@@ -8,10 +8,8 @@ void Menu::wyswietlMenuGlowne() {
         cout << "1. Wczytaj dane z pliku" << endl;
         cout << "2. Wygeneruj graf losowo" << endl;
         cout << "3. Wyswietl graf" << endl;
-        cout << "4. Uruchom algorytm MST (Prim)" << endl;
-        cout << "5. Uruchom algorytm najkrotszej sciezki (Dijkstra)" << endl;
-        cout << "6. Uruchom testy do sprawozdania" << endl;
-        cout << "7. Wyjscie" << endl;
+        cout << "4. Wyjscie" << endl;
+        cout << "5. Brute Test" << endl;
         cout << "Wybierz opcje: ";
         cin >> wybor;
         cout << endl;
@@ -27,16 +25,10 @@ void Menu::wyswietlMenuGlowne() {
                 wyswietlGraf();
                 break;
             case 4:
-                uruchomAlgorytmMST();
+                cout << "Koniec programu." << endl;
                 break;
             case 5:
-                uruchomAlgorytmNajkrotszejSciezki();
-                break;
-            case 6:
-                uruchomTestyDoSprawozdania();
-                break;
-            case 7:
-                cout << "Koniec programu." << endl;
+                testBruteForce();
                 break;
             default:
                 cout << "Nieprawidlowy wybor. Sprobuj ponownie." << endl;
@@ -57,14 +49,6 @@ void Menu::wyswietlGraf() {
     grafManager.wyswietlGraf();
 }
 
-void Menu::uruchomAlgorytmMST() {
-    grafManager.uruchomAlgorytmMST();
-}
-
-void Menu::uruchomAlgorytmNajkrotszejSciezki() {
-    grafManager.uruchomAlgorytmNajkrotszejSciezki();
-}
-
-void Menu::uruchomTestyDoSprawozdania() {
-    grafManager.uruchomTestyDoSprawozdania();
+void Menu::testBruteForce() {
+    grafManager.uruchomBruteForce(0);
 }

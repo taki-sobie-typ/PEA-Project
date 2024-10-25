@@ -1,4 +1,18 @@
 #include "../header/GrafManager.h"
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+GrafManager::~GrafManager() {
+    // Destructor to release memory
+    if (macierzKosztow) {
+        for (size_t i = 0; i < liczbaMiast; ++i) {
+            delete[] macierzKosztow[i];
+        }
+        delete[] macierzKosztow;
+    }
+}
 
 void GrafManager::wczytajDaneZPliku() {
     string nazwaPliku;
@@ -6,10 +20,19 @@ void GrafManager::wczytajDaneZPliku() {
     cin >> nazwaPliku;
     cout << endl;
 
-    macierzIncydencji = czytnikGrafow.wczytajMacierz(nazwaPliku);
-    listaSasiedztwa = czytnikGrafow.wczytajListe(nazwaPliku);
+    // Free existing macierzKosztow if it exists
+    if (macierzKosztow) {
+        for (size_t i = 0; i < liczbaMiast; ++i) {
+            delete[] macierzKosztow[i];
+        }
+        delete[] macierzKosztow;
+        macierzKosztow = nullptr;
+    }
 
-    if (macierzIncydencji && listaSasiedztwa) {
+    // Read new data
+    macierzKosztow = czytnikGrafow.wczytajMacierz(nazwaPliku, liczbaMiast);
+
+    if (macierzKosztow) {
         cout << "Dane zostaly wczytane pomyslnie." << endl;
     } else {
         cout << "Blad wczytywania danych." << endl;
@@ -22,7 +45,7 @@ void GrafManager::wygenerujGrafLosowo() {
     float gestosc;
     size_t maxWartosc;
 
-    cout << "Podaj liczbe wierzcholkow: ";
+    cout << "Podaj liczbe wierzcholków: ";
     cin >> liczbaWierzcholkow;
     cout << "Podaj gestosc grafu (w %): ";
     cin >> gestosc;
@@ -32,8 +55,26 @@ void GrafManager::wygenerujGrafLosowo() {
 
     SuroweDaneGrafu dane = generatorGrafow.generuj(gestosc / 100.0, liczbaWierzcholkow, maxWartosc);
 
-    macierzIncydencji = new MacierzIncydencji(dane.liczbaKrawedzi, dane.liczbaWierzcholkow, dane.dane);
-    listaSasiedztwa = new ListaSasiedztwa(dane.liczbaKrawedzi, dane.liczbaWierzcholkow, dane.dane);
+    // Free existing macierzKosztow if it exists
+    if (macierzKosztow) {
+        for (size_t i = 0; i < liczbaMiast; ++i) {
+            delete[] macierzKosztow[i];
+        }
+        delete[] macierzKosztow;
+        macierzKosztow = nullptr;
+    }
+
+    // Update the number of cities
+    liczbaMiast = dane.liczbaWierzcholkow;
+
+    // Allocate new macierzKosztow and populate it
+    macierzKosztow = new int*[liczbaMiast];
+    for (size_t i = 0; i < liczbaMiast; ++i) {
+        macierzKosztow[i] = new int[liczbaMiast];
+        for (size_t j = 0; j < liczbaMiast; ++j) {
+            macierzKosztow[i][j] = dane.dane[i * liczbaMiast + j];
+        }
+    }
 
     delete[] dane.dane;
 
@@ -42,72 +83,27 @@ void GrafManager::wygenerujGrafLosowo() {
 }
 
 void GrafManager::wyswietlGraf() {
-    if (macierzIncydencji) {
-        cout << "Macierz Incydencji:" << endl;
-        macierzIncydencji->drukuj(cout);
+    if (macierzKosztow) {
+        cout << "Macierz Kosztow:" << endl;
+        for (size_t i = 0; i < liczbaMiast; ++i) {
+            for (size_t j = 0; j < liczbaMiast; ++j) {
+                cout << macierzKosztow[i][j] << " ";
+            }
+            cout << endl;
+        }
         cout << endl;
-    }
-
-    if (listaSasiedztwa) {
-        cout << "Lista Sasiedztwa:" << endl;
-        listaSasiedztwa->drukuj(cout);
-        cout << endl;
-    }
-}
-
-void GrafManager::uruchomAlgorytmMST() {
-    if (!macierzIncydencji || !listaSasiedztwa) {
-        cout << "Graf nie zostal wczytany ani wygenerowany." << endl;
-        cout << endl;
-        return;
-    }
-
-    Prim prim;
-    cout << "Wybierz reprezentacje grafu:" << endl;
-    cout << "1. Macierz Incydencji" << endl;
-    cout << "2. Lista Sasiedztwa" << endl;
-    cout << "Wybierz opcje: ";
-    int wybor;
-    cin >> wybor;
-    cout << endl;
-
-    if (wybor == 1) {
-        prim.uruchomDlaMacierzy(*macierzIncydencji);
     } else {
-        prim.uruchomDlaListy(*listaSasiedztwa);
+        cout << "Brak danych do wyswietlenia." << endl;
     }
 }
 
-void GrafManager::uruchomAlgorytmNajkrotszejSciezki() {
-    if (!macierzIncydencji || !listaSasiedztwa) {
-        cout << "Graf nie zostal wczytany ani wygenerowany." << endl;
-        cout << endl;
-        return;
-    }
-
-    int start, koniec;
-    cout << "Podaj wierzcholek startowy: ";
-    cin >> start;
-    cout << "Podaj wierzcholek koncowy: ";
-    cin >> koniec;
-    cout << endl;
-
-    Dijkstra dijkstra;
-    cout << "Wybierz reprezentacje grafu:" << endl;
-    cout << "1. Macierz Incydencji" << endl;
-    cout << "2. Lista Sasiedztwa" << endl;
-    cout << "Wybierz opcje: ";
-    int wybor;
-    cin >> wybor;
-    cout << endl;
-
-    if (wybor == 1) {
-        dijkstra.uruchomDlaMacierzy(*macierzIncydencji, start);
+// New method to run the Brute Force algorithm
+void GrafManager::uruchomBruteForce(int start) {
+    if (macierzKosztow) {
+        MacierzKosztow macierz(macierzKosztow, liczbaMiast);
+        cout << "Uruchamianie algorytmu Brute Force od miasta " << start << "..." << endl;
+        BruteForce::uruchomDlaMacierzy(macierz, start);
     } else {
-        dijkstra.uruchomDlaListy(*listaSasiedztwa, start);
+        cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;
     }
-}
-
-void GrafManager::uruchomTestyDoSprawozdania() {
-
 }

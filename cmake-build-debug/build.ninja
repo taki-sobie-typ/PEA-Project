@@ -61,8 +61,8 @@ build CMakeFiles/PEA_Project.dir/source/CzytnikGrafow.cpp.obj: CXX_COMPILER__PEA
   OBJECT_DIR = CMakeFiles\PEA_Project.dir
   OBJECT_FILE_DIR = CMakeFiles\PEA_Project.dir\source
 
-build CMakeFiles/PEA_Project.dir/source/Dijkstra.cpp.obj: CXX_COMPILER__PEA_Project_unscanned_Debug C$:/Users/Patryk/CLionProjects/PEA_Project/source/Dijkstra.cpp || cmake_object_order_depends_target_PEA_Project
-  DEP_FILE = CMakeFiles\PEA_Project.dir\source\Dijkstra.cpp.obj.d
+build CMakeFiles/PEA_Project.dir/source/BruteForce.cpp.obj: CXX_COMPILER__PEA_Project_unscanned_Debug C$:/Users/Patryk/CLionProjects/PEA_Project/source/BruteForce.cpp || cmake_object_order_depends_target_PEA_Project
+  DEP_FILE = CMakeFiles\PEA_Project.dir\source\BruteForce.cpp.obj.d
   FLAGS = -static-libstdc++ -static-libgcc -g -std=gnu++20 -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\PEA_Project.dir
   OBJECT_FILE_DIR = CMakeFiles\PEA_Project.dir\source
@@ -79,26 +79,14 @@ build CMakeFiles/PEA_Project.dir/source/GrafManager.cpp.obj: CXX_COMPILER__PEA_P
   OBJECT_DIR = CMakeFiles\PEA_Project.dir
   OBJECT_FILE_DIR = CMakeFiles\PEA_Project.dir\source
 
-build CMakeFiles/PEA_Project.dir/source/ListaSasiedztwa.cpp.obj: CXX_COMPILER__PEA_Project_unscanned_Debug C$:/Users/Patryk/CLionProjects/PEA_Project/source/ListaSasiedztwa.cpp || cmake_object_order_depends_target_PEA_Project
-  DEP_FILE = CMakeFiles\PEA_Project.dir\source\ListaSasiedztwa.cpp.obj.d
-  FLAGS = -static-libstdc++ -static-libgcc -g -std=gnu++20 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles\PEA_Project.dir
-  OBJECT_FILE_DIR = CMakeFiles\PEA_Project.dir\source
-
-build CMakeFiles/PEA_Project.dir/source/MacierzIncydencji.cpp.obj: CXX_COMPILER__PEA_Project_unscanned_Debug C$:/Users/Patryk/CLionProjects/PEA_Project/source/MacierzIncydencji.cpp || cmake_object_order_depends_target_PEA_Project
-  DEP_FILE = CMakeFiles\PEA_Project.dir\source\MacierzIncydencji.cpp.obj.d
+build CMakeFiles/PEA_Project.dir/source/MacierzKosztow.cpp.obj: CXX_COMPILER__PEA_Project_unscanned_Debug C$:/Users/Patryk/CLionProjects/PEA_Project/source/MacierzKosztow.cpp || cmake_object_order_depends_target_PEA_Project
+  DEP_FILE = CMakeFiles\PEA_Project.dir\source\MacierzKosztow.cpp.obj.d
   FLAGS = -static-libstdc++ -static-libgcc -g -std=gnu++20 -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\PEA_Project.dir
   OBJECT_FILE_DIR = CMakeFiles\PEA_Project.dir\source
 
 build CMakeFiles/PEA_Project.dir/source/Menu.cpp.obj: CXX_COMPILER__PEA_Project_unscanned_Debug C$:/Users/Patryk/CLionProjects/PEA_Project/source/Menu.cpp || cmake_object_order_depends_target_PEA_Project
   DEP_FILE = CMakeFiles\PEA_Project.dir\source\Menu.cpp.obj.d
-  FLAGS = -static-libstdc++ -static-libgcc -g -std=gnu++20 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles\PEA_Project.dir
-  OBJECT_FILE_DIR = CMakeFiles\PEA_Project.dir\source
-
-build CMakeFiles/PEA_Project.dir/source/Prim.cpp.obj: CXX_COMPILER__PEA_Project_unscanned_Debug C$:/Users/Patryk/CLionProjects/PEA_Project/source/Prim.cpp || cmake_object_order_depends_target_PEA_Project
-  DEP_FILE = CMakeFiles\PEA_Project.dir\source\Prim.cpp.obj.d
   FLAGS = -static-libstdc++ -static-libgcc -g -std=gnu++20 -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\PEA_Project.dir
   OBJECT_FILE_DIR = CMakeFiles\PEA_Project.dir\source
@@ -111,7 +99,7 @@ build CMakeFiles/PEA_Project.dir/source/Prim.cpp.obj: CXX_COMPILER__PEA_Project_
 #############################################
 # Link the executable PEA_Project.exe
 
-build PEA_Project.exe: CXX_EXECUTABLE_LINKER__PEA_Project_Debug CMakeFiles/PEA_Project.dir/main.cpp.obj CMakeFiles/PEA_Project.dir/source/CzytnikGrafow.cpp.obj CMakeFiles/PEA_Project.dir/source/Dijkstra.cpp.obj CMakeFiles/PEA_Project.dir/source/GeneratorGrafow.cpp.obj CMakeFiles/PEA_Project.dir/source/GrafManager.cpp.obj CMakeFiles/PEA_Project.dir/source/ListaSasiedztwa.cpp.obj CMakeFiles/PEA_Project.dir/source/MacierzIncydencji.cpp.obj CMakeFiles/PEA_Project.dir/source/Menu.cpp.obj CMakeFiles/PEA_Project.dir/source/Prim.cpp.obj
+build PEA_Project.exe: CXX_EXECUTABLE_LINKER__PEA_Project_Debug CMakeFiles/PEA_Project.dir/main.cpp.obj CMakeFiles/PEA_Project.dir/source/CzytnikGrafow.cpp.obj CMakeFiles/PEA_Project.dir/source/BruteForce.cpp.obj CMakeFiles/PEA_Project.dir/source/GeneratorGrafow.cpp.obj CMakeFiles/PEA_Project.dir/source/GrafManager.cpp.obj CMakeFiles/PEA_Project.dir/source/MacierzKosztow.cpp.obj CMakeFiles/PEA_Project.dir/source/Menu.cpp.obj
   FLAGS = -static-libstdc++ -static-libgcc -g
   LINK_FLAGS = -static
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
