@@ -3,9 +3,11 @@
 
 #include "MacierzKosztow.h"
 
+// Klasa realizująca algorytm Brute Force.
 class BruteForce {
 public:
-    static void uruchomDlaMacierzy(const MacierzKosztow& graf, int start);
+    // Statyczna metoda uruchamiająca algorytm Brute Force na podanej macierzy kosztów, rozpoczynając od wybranego miasta.
+    static void uruchomAlgorytm(const MacierzKosztow& graf, int start);
 };
 
 #endif // BRUTEFORCE_H

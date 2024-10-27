@@ -67,12 +67,6 @@ build CMakeFiles/PEA_Project.dir/source/BruteForce.cpp.obj: CXX_COMPILER__PEA_Pr
   OBJECT_DIR = CMakeFiles\PEA_Project.dir
   OBJECT_FILE_DIR = CMakeFiles\PEA_Project.dir\source
 
-build CMakeFiles/PEA_Project.dir/source/GeneratorGrafow.cpp.obj: CXX_COMPILER__PEA_Project_unscanned_Debug C$:/Users/Patryk/CLionProjects/PEA_Project/source/GeneratorGrafow.cpp || cmake_object_order_depends_target_PEA_Project
-  DEP_FILE = CMakeFiles\PEA_Project.dir\source\GeneratorGrafow.cpp.obj.d
-  FLAGS = -static-libstdc++ -static-libgcc -g -std=gnu++20 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles\PEA_Project.dir
-  OBJECT_FILE_DIR = CMakeFiles\PEA_Project.dir\source
-
 build CMakeFiles/PEA_Project.dir/source/GrafManager.cpp.obj: CXX_COMPILER__PEA_Project_unscanned_Debug C$:/Users/Patryk/CLionProjects/PEA_Project/source/GrafManager.cpp || cmake_object_order_depends_target_PEA_Project
   DEP_FILE = CMakeFiles\PEA_Project.dir\source\GrafManager.cpp.obj.d
   FLAGS = -static-libstdc++ -static-libgcc -g -std=gnu++20 -fdiagnostics-color=always
@@ -91,6 +85,12 @@ build CMakeFiles/PEA_Project.dir/source/Menu.cpp.obj: CXX_COMPILER__PEA_Project_
   OBJECT_DIR = CMakeFiles\PEA_Project.dir
   OBJECT_FILE_DIR = CMakeFiles\PEA_Project.dir\source
 
+build CMakeFiles/PEA_Project.dir/source/GrafGenerator.cpp.obj: CXX_COMPILER__PEA_Project_unscanned_Debug C$:/Users/Patryk/CLionProjects/PEA_Project/source/GrafGenerator.cpp || cmake_object_order_depends_target_PEA_Project
+  DEP_FILE = CMakeFiles\PEA_Project.dir\source\GrafGenerator.cpp.obj.d
+  FLAGS = -static-libstdc++ -static-libgcc -g -std=gnu++20 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\PEA_Project.dir
+  OBJECT_FILE_DIR = CMakeFiles\PEA_Project.dir\source
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target PEA_Project
@@ -99,7 +99,7 @@ build CMakeFiles/PEA_Project.dir/source/Menu.cpp.obj: CXX_COMPILER__PEA_Project_
 #############################################
 # Link the executable PEA_Project.exe
 
-build PEA_Project.exe: CXX_EXECUTABLE_LINKER__PEA_Project_Debug CMakeFiles/PEA_Project.dir/main.cpp.obj CMakeFiles/PEA_Project.dir/source/CzytnikGrafow.cpp.obj CMakeFiles/PEA_Project.dir/source/BruteForce.cpp.obj CMakeFiles/PEA_Project.dir/source/GeneratorGrafow.cpp.obj CMakeFiles/PEA_Project.dir/source/GrafManager.cpp.obj CMakeFiles/PEA_Project.dir/source/MacierzKosztow.cpp.obj CMakeFiles/PEA_Project.dir/source/Menu.cpp.obj
+build PEA_Project.exe: CXX_EXECUTABLE_LINKER__PEA_Project_Debug CMakeFiles/PEA_Project.dir/main.cpp.obj CMakeFiles/PEA_Project.dir/source/CzytnikGrafow.cpp.obj CMakeFiles/PEA_Project.dir/source/BruteForce.cpp.obj CMakeFiles/PEA_Project.dir/source/GrafManager.cpp.obj CMakeFiles/PEA_Project.dir/source/MacierzKosztow.cpp.obj CMakeFiles/PEA_Project.dir/source/Menu.cpp.obj CMakeFiles/PEA_Project.dir/source/GrafGenerator.cpp.obj
   FLAGS = -static-libstdc++ -static-libgcc -g
   LINK_FLAGS = -static
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32

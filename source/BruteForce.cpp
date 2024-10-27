@@ -1,60 +1,71 @@
 #include "../header/BruteForce.h"
 #include <iostream>
-#include <limits>
-#include <chrono>
-#include <algorithm> // For std::next_permutation
+#include <climits> // Dla INT_MAX
+#include <chrono>  // Dla pomiaru czasu
+#include <algorithm> // Do generowania permutacji
 
 using namespace std;
 
-void BruteForce::uruchomDlaMacierzy(const MacierzKosztow& graf, int start) {
-    int** drogi = graf.pobierzMacierzKosztow();
-    int liczba_miast = graf.pobierzLiczbeMiast();
+// Funkcja uruchamiająca algorytm pełnego przeglądu (brute force) na podanej macierzy kosztów
+void BruteForce::uruchomAlgorytm(const MacierzKosztow& macierz, int miastoPoczatkowe) {
+    // Pobieranie tablicy kosztów oraz liczby miast z przekazanego obiektu grafu
+    int** tablicaKosztow = macierz.pobierzMacierzKosztow();
+    int liczbaMiast = macierz.pobierzLiczbeMiast();
 
-    auto start_time = chrono::high_resolution_clock::now(); // Start timing
+    // Rozpocznij mierzenie czasu działania algorytmu
+    auto czasStart = chrono::high_resolution_clock::now();
 
-    int suma_drog = INT_MAX;
-    int suma_obecna;
-    int* miasta = new int[liczba_miast];
-    int* najlepsza_trasa = new int[liczba_miast];
-    najlepsza_trasa[0] = start; // Assuming 'start' is the starting city
+    int najnizszyKoszt = INT_MAX; // Przechowuje minimalny znaleziony koszt
+    int aktualnyKoszt; // Zmienna do obliczania bieżącego kosztu trasy
+    int* indeksyMiast = new int[liczbaMiast]; // Tablica do przechowywania indeksów miast
+    int* optymalnaSciezka = new int[liczbaMiast]; // Tablica do przechowywania najlepszej trasy
+    optymalnaSciezka[0] = miastoPoczatkowe; // Ustaw pierwszy punkt na miasto początkowe
 
-    for (int i = 0; i < liczba_miast; i++) {
-        miasta[i] = i;
+    // Przygotuj tablicę indeksów miast do generowania permutacji
+    for (int k = 0; k < liczbaMiast; k++) {
+        indeksyMiast[k] = k;
     }
 
+    // Przeglądaj wszystkie możliwe permutacje miast, z wyłączeniem punktu startowego
     do {
-        suma_obecna = 0;
-        for (int i = 0; i < liczba_miast - 1; i++) {
-            suma_obecna += drogi[miasta[i]][miasta[i + 1]];
+        aktualnyKoszt = 0; // Zresetuj koszt dla bieżącej permutacji
+        // Oblicz koszt przejścia między miastami w danej kolejności
+        for (int x = 0; x < liczbaMiast - 1; x++) {
+            aktualnyKoszt += tablicaKosztow[indeksyMiast[x]][indeksyMiast[x + 1]];
 
-            if (suma_obecna >= suma_drog) {
+            // Jeżeli aktualny koszt przewyższa najniższy znaleziony koszt, zakończ pętlę
+            if (aktualnyKoszt >= najnizszyKoszt) {
                 break;
             }
         }
-        suma_obecna += drogi[miasta[liczba_miast - 1]][miasta[0]]; // Return to start city
+        // Uwzględnij koszt powrotu do miasta początkowego
+        aktualnyKoszt += tablicaKosztow[indeksyMiast[liczbaMiast - 1]][indeksyMiast[0]];
 
-        if (suma_obecna < suma_drog) {
-            suma_drog = suma_obecna;
-            for (int i = 0; i < liczba_miast; i++) {
-                najlepsza_trasa[i] = miasta[i];
+        // Jeżeli bieżący koszt jest mniejszy od najmniejszego zapisanego, zapisz nowy minimalny koszt
+        if (aktualnyKoszt < najnizszyKoszt) {
+            najnizszyKoszt = aktualnyKoszt;
+            for (int y = 0; y < liczbaMiast; y++) {
+                optymalnaSciezka[y] = indeksyMiast[y];
             }
         }
 
-    } while (std::next_permutation(miasta + 1, miasta + liczba_miast));
+    } while (std::next_permutation(indeksyMiast + 1, indeksyMiast + liczbaMiast)); // Generowanie następnych permutacji
 
-    auto stop_time = chrono::high_resolution_clock::now(); // End timing
-    auto duration = chrono::duration_cast<chrono::microseconds>(stop_time - start_time);
+    // Zakończ mierzenie czasu działania algorytmu
+    auto czasStop = chrono::high_resolution_clock::now();
+    auto czasTrwania = chrono::duration_cast<chrono::microseconds>(czasStop - czasStart);
 
-    // Output results
-    cout << "Najlepsza trasa: " << start << " -> ";
-    for (int i = 1; i < liczba_miast; i++) {
-        cout << najlepsza_trasa[i] << " -> ";
+    // Wyświetlanie wyników
+    cout << "Najkorzystniejsza trasa: " << miastoPoczatkowe << " -> ";
+    for (int z = 1; z < liczbaMiast; z++) {
+        cout << optymalnaSciezka[z] << " -> ";
     }
-    cout << start << endl; // Closing the loop back to the start
+    cout << miastoPoczatkowe << endl; // Zamyka cykl, wracając do miasta początkowego
 
-    cout << "Minimalny koszt: " << suma_drog << endl;
-    cout << "Czas działania Przegląd zupelnego: " << duration.count() << " mikrosekund" << endl;
+    cout << "Najnizszy koszt przejscia: " << najnizszyKoszt << endl;
+    cout << "Czas dzialania algorytmu pelnego przegladu: " << czasTrwania.count() << " mikrosekund" << endl;
 
-    delete[] miasta;
-    delete[] najlepsza_trasa;
+    // Zwolnij pamięć zajmowaną przez dynamiczne tablice
+    delete[] indeksyMiast;
+    delete[] optymalnaSciezka;
 }

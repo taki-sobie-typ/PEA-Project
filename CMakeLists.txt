@@ -15,14 +15,14 @@ add_executable(
         PEA_Project main.cpp
         source/CzytnikGrafow.cpp
         source/BruteForce.cpp
-        source/GeneratorGrafow.cpp
         source/GrafManager.cpp
         source/MacierzKosztow.cpp
         source/Menu.cpp
         header/CzytnikGrafow.h
         header/BruteForce.h
-        header/GeneratorGrafow.h
         header/GrafManager.h
         header/MacierzKosztow.h
         header/Menu.h
+        source/GrafGenerator.cpp
+        header/GrafGenerator.h
 )

@@ -4,8 +4,9 @@
 
 using namespace std;
 
+// Destruktor klasy GrafManager
+// Zwalnia pamięć zajmowaną przez macierz kosztów, jeśli została załadowana
 GrafManager::~GrafManager() {
-    // Destructor to release memory
     if (macierzKosztow) {
         for (size_t i = 0; i < liczbaMiast; ++i) {
             delete[] macierzKosztow[i];
@@ -14,13 +15,14 @@ GrafManager::~GrafManager() {
     }
 }
 
+// Metoda do wczytywania danych z pliku
 void GrafManager::wczytajDaneZPliku() {
     string nazwaPliku;
     cout << "Podaj nazwe pliku: ";
     cin >> nazwaPliku;
     cout << endl;
 
-    // Free existing macierzKosztow if it exists
+    // Zwolnij istniejącą macierz kosztów, jeśli istnieje
     if (macierzKosztow) {
         for (size_t i = 0; i < liczbaMiast; ++i) {
             delete[] macierzKosztow[i];
@@ -29,9 +31,10 @@ void GrafManager::wczytajDaneZPliku() {
         macierzKosztow = nullptr;
     }
 
-    // Read new data
+    // Wczytaj nowe dane z pliku
     macierzKosztow = czytnikGrafow.wczytajMacierz(nazwaPliku, liczbaMiast);
 
+    // Sprawdź, czy dane zostały poprawnie wczytane
     if (macierzKosztow) {
         cout << "Dane zostaly wczytane pomyslnie." << endl;
     } else {
@@ -40,22 +43,22 @@ void GrafManager::wczytajDaneZPliku() {
     cout << endl;
 }
 
+// Metoda do generowania losowego grafu
 void GrafManager::wygenerujGrafLosowo() {
-    size_t liczbaWierzcholkow;
-    float gestosc;
-    size_t maxWartosc;
+    int liczbaWierzcholkow, minWartosc, maxWartosc;
 
-    cout << "Podaj liczbe wierzcholków: ";
+    cout << "Podaj liczbe wierzcholkow: ";
     cin >> liczbaWierzcholkow;
-    cout << "Podaj gestosc grafu (w %): ";
-    cin >> gestosc;
+    cout << "Podaj minimalna wartosc krawedzi: ";
+    cin >> minWartosc;
     cout << "Podaj maksymalna wartosc krawedzi: ";
     cin >> maxWartosc;
     cout << endl;
 
-    SuroweDaneGrafu dane = generatorGrafow.generuj(gestosc / 100.0, liczbaWierzcholkow, maxWartosc);
+    // Wygeneruj losowy graf używając klasy GrafGenerator
+    vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(liczbaWierzcholkow, minWartosc, maxWartosc);
 
-    // Free existing macierzKosztow if it exists
+    // Zwolnij istniejącą macierz kosztów, jeśli istnieje
     if (macierzKosztow) {
         for (size_t i = 0; i < liczbaMiast; ++i) {
             delete[] macierzKosztow[i];
@@ -64,27 +67,24 @@ void GrafManager::wygenerujGrafLosowo() {
         macierzKosztow = nullptr;
     }
 
-    // Update the number of cities
-    liczbaMiast = dane.liczbaWierzcholkow;
-
-    // Allocate new macierzKosztow and populate it
+    // Zaktualizuj liczbaMiast i zaalokuj nową macierz kosztów
+    liczbaMiast = liczbaWierzcholkow;
     macierzKosztow = new int*[liczbaMiast];
     for (size_t i = 0; i < liczbaMiast; ++i) {
         macierzKosztow[i] = new int[liczbaMiast];
         for (size_t j = 0; j < liczbaMiast; ++j) {
-            macierzKosztow[i][j] = dane.dane[i * liczbaMiast + j];
+            macierzKosztow[i][j] = matrix[i][j];
         }
     }
-
-    delete[] dane.dane;
 
     cout << "Graf zostal wygenerowany pomyslnie." << endl;
     cout << endl;
 }
 
+// Metoda do wyświetlania macierzy kosztów
 void GrafManager::wyswietlGraf() {
     if (macierzKosztow) {
-        cout << "Macierz Kosztow:" << endl;
+        cout << "Macierz:" << endl;
         for (size_t i = 0; i < liczbaMiast; ++i) {
             for (size_t j = 0; j < liczbaMiast; ++j) {
                 cout << macierzKosztow[i][j] << " ";
@@ -97,12 +97,25 @@ void GrafManager::wyswietlGraf() {
     }
 }
 
-// New method to run the Brute Force algorithm
-void GrafManager::uruchomBruteForce(int start) {
+// Metoda do uruchomienia algorytmu Brute Force
+void GrafManager::uruchomBruteForce() {
     if (macierzKosztow) {
+        int start;
+
+        // Poproś użytkownika o wybór wierzchołka startowego
+        cout << "Wybierz wierzcholek startowy (od 0 do " << liczbaMiast - 1 << "): ";
+        cin >> start;
+
+        // Upewnij się, że użytkownik podał poprawny numer wierzchołka
+        while (start < 0 || start >= liczbaMiast) {
+            cout << "Niepoprawny wierzcholek. Wybierz wierzcholek startowy (od 0 do " << liczbaMiast - 1 << "): ";
+            cin >> start;
+        }
+
+        // Utwórz obiekt macierzy kosztów i uruchom algorytm Brute Force
         MacierzKosztow macierz(macierzKosztow, liczbaMiast);
         cout << "Uruchamianie algorytmu Brute Force od miasta " << start << "..." << endl;
-        BruteForce::uruchomDlaMacierzy(macierz, start);
+        BruteForce::uruchomAlgorytm(macierz, start);
     } else {
         cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;
     }

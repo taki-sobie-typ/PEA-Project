@@ -6,15 +6,17 @@
 
 using namespace std;
 
+// Klasa odpowiedzialna za wczytywanie macierzy kosztów z pliku.
 class CzytnikGrafow {
 private:
-    string sciezkaBazowa;
+    string sciezkaBazowa; // Ścieżka bazowa do plików z danymi.
 
 public:
+    // Konstruktor przyjmujący ścieżkę bazową jako parametr.
     CzytnikGrafow(string sciezkaBazowa);
 
-    // Method to read and return the cost matrix
+    // Metoda do wczytywania macierzy kosztów z pliku i zwracająca ją.
     int** wczytajMacierz(string nazwaPliku, size_t& liczbaMiast);
 };
 
-#endif // CZYTNIK_GRAFOW_H
+#endif // CZYTNIKGRAFOW_H

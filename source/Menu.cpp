@@ -2,53 +2,60 @@
 
 using namespace std;
 
+// Metoda wyświetlająca główne menu programu, umożliwiająca użytkownikowi wybór opcji.
 void Menu::wyswietlMenuGlowne() {
     int wybor;
     do {
+        // Wyświetlenie opcji menu.
         cout << "1. Wczytaj dane z pliku" << endl;
         cout << "2. Wygeneruj graf losowo" << endl;
         cout << "3. Wyswietl graf" << endl;
-        cout << "4. Wyjscie" << endl;
-        cout << "5. Brute Test" << endl;
+        cout << "4. Brute Test" << endl;
+        cout << "0. Wyjscie" << endl;
         cout << "Wybierz opcje: ";
         cin >> wybor;
         cout << endl;
 
+        // Obsługa wyboru użytkownika przy użyciu instrukcji switch.
         switch (wybor) {
             case 1:
-                wczytajDaneZPliku();
+                wczytajDaneZPliku(); // Wywołanie metody do wczytania danych z pliku.
                 break;
             case 2:
-                wygenerujGrafLosowo();
+                wygenerujGrafLosowo(); // Wywołanie metody do generowania losowego grafu.
                 break;
             case 3:
-                wyswietlGraf();
+                wyswietlGraf(); // Wywołanie metody do wyświetlenia macierzy kosztów grafu.
                 break;
             case 4:
-                cout << "Koniec programu." << endl;
+                testBruteForce(); // Wywołanie metody do uruchomienia testu algorytmu Brute Force.
                 break;
-            case 5:
-                testBruteForce();
+            case 0:
+                cout << "Koniec programu." << endl; // Zakończenie programu.
                 break;
             default:
-                cout << "Nieprawidlowy wybor. Sprobuj ponownie." << endl;
+                cout << "Nieprawidlowy wybor. Sprobuj ponownie." << endl; // Obsługa nieprawidłowego wyboru.
         }
         cout << endl;
-    } while (wybor != 6);
+    } while (wybor != 0); // Pętla działa do momentu, gdy użytkownik wybierze opcję zakończenia (0).
 }
 
+// Metoda wywołująca funkcję wczytywania danych z pliku przy użyciu obiektu grafManager.
 void Menu::wczytajDaneZPliku() {
     grafManager.wczytajDaneZPliku();
 }
 
+// Metoda wywołująca funkcję generowania losowego grafu przy użyciu obiektu grafManager.
 void Menu::wygenerujGrafLosowo() {
     grafManager.wygenerujGrafLosowo();
 }
 
+// Metoda wywołująca funkcję wyświetlania macierzy kosztów przy użyciu obiektu grafManager.
 void Menu::wyswietlGraf() {
     grafManager.wyswietlGraf();
 }
 
+// Metoda wywołująca funkcję uruchomienia algorytmu Brute Force przy użyciu obiektu grafManager.
 void Menu::testBruteForce() {
-    grafManager.uruchomBruteForce(0);
+    grafManager.uruchomBruteForce();
 }
