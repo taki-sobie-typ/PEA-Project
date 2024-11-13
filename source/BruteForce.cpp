@@ -7,7 +7,7 @@
 using namespace std;
 
 // Funkcja uruchamiająca algorytm pełnego przeglądu (brute force) na podanej macierzy kosztów
-void BruteForce::uruchomAlgorytm(const MacierzKosztow& macierz, int miastoPoczatkowe) {
+long long BruteForce::uruchomAlgorytm(const MacierzKosztow& macierz) {
     // Pobieranie tablicy kosztów oraz liczby miast z przekazanego obiektu grafu
     int** tablicaKosztow = macierz.pobierzMacierzKosztow();
     int liczbaMiast = macierz.pobierzLiczbeMiast();
@@ -19,7 +19,7 @@ void BruteForce::uruchomAlgorytm(const MacierzKosztow& macierz, int miastoPoczat
     int aktualnyKoszt; // Zmienna do obliczania bieżącego kosztu trasy
     int* indeksyMiast = new int[liczbaMiast]; // Tablica do przechowywania indeksów miast
     int* optymalnaSciezka = new int[liczbaMiast]; // Tablica do przechowywania najlepszej trasy
-    optymalnaSciezka[0] = miastoPoczatkowe; // Ustaw pierwszy punkt na miasto początkowe
+    optymalnaSciezka[0] = 0; // Ustaw pierwszy punkt na miasto początkowe (zawsze 0)
 
     // Przygotuj tablicę indeksów miast do generowania permutacji
     for (int k = 0; k < liczbaMiast; k++) {
@@ -56,11 +56,11 @@ void BruteForce::uruchomAlgorytm(const MacierzKosztow& macierz, int miastoPoczat
     auto czasTrwania = chrono::duration_cast<chrono::microseconds>(czasStop - czasStart);
 
     // Wyświetlanie wyników
-    cout << "Najkorzystniejsza trasa: " << miastoPoczatkowe << " -> ";
+    cout << "Najkorzystniejsza trasa: 0 -> ";
     for (int z = 1; z < liczbaMiast; z++) {
         cout << optymalnaSciezka[z] << " -> ";
     }
-    cout << miastoPoczatkowe << endl; // Zamyka cykl, wracając do miasta początkowego
+    cout << "0" << endl; // Zamyka cykl, wracając do miasta początkowego
 
     cout << "Najnizszy koszt przejscia: " << najnizszyKoszt << endl;
     cout << "Czas dzialania algorytmu pelnego przegladu: " << czasTrwania.count() << " mikrosekund" << endl;
@@ -68,4 +68,7 @@ void BruteForce::uruchomAlgorytm(const MacierzKosztow& macierz, int miastoPoczat
     // Zwolnij pamięć zajmowaną przez dynamiczne tablice
     delete[] indeksyMiast;
     delete[] optymalnaSciezka;
+
+    // Zwróć czas trwania w mikrosekundach
+    return czasTrwania.count();
 }

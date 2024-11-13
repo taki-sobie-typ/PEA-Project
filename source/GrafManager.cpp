@@ -1,4 +1,6 @@
 #include "../header/GrafManager.h"
+
+#include <fstream>
 #include <iostream>
 #include <string>
 
@@ -100,23 +102,57 @@ void GrafManager::wyswietlGraf() {
 // Metoda do uruchomienia algorytmu Brute Force
 void GrafManager::uruchomBruteForce() {
     if (macierzKosztow) {
-        int start;
-
-        // Poproś użytkownika o wybór wierzchołka startowego
-        cout << "Wybierz wierzcholek startowy (od 0 do " << liczbaMiast - 1 << "): ";
-        cin >> start;
-
-        // Upewnij się, że użytkownik podał poprawny numer wierzchołka
-        while (start < 0 || start >= liczbaMiast) {
-            cout << "Niepoprawny wierzcholek. Wybierz wierzcholek startowy (od 0 do " << liczbaMiast - 1 << "): ";
-            cin >> start;
-        }
-
         // Utwórz obiekt macierzy kosztów i uruchom algorytm Brute Force
         MacierzKosztow macierz(macierzKosztow, liczbaMiast);
-        cout << "Uruchamianie algorytmu Brute Force od miasta " << start << "..." << endl;
-        BruteForce::uruchomAlgorytm(macierz, start);
+        BruteForce::uruchomAlgorytm(macierz);
     } else {
         cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;
+    }
+}
+
+// Metoda do zapisu wyników do pliku CSV
+void GrafManager::zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long long czas) {
+    ofstream plik(nazwaPliku, ios::app);  // Open in append mode
+    if (plik.is_open()) {
+        plik << liczbaMiast << "," << czas << endl;
+        plik.close();
+    } else {
+        cerr << "Blad otwierania pliku do zapisu." << endl;
+    }
+}
+
+// Metoda testująca Brute Force dla raportu
+void GrafManager::testForReportBruteForce() {
+    string nazwaPlikuCSV = "bruteforce_report.csv";
+
+    for (int rozmiar = 5; rozmiar <= 15; ++rozmiar) {
+        for (int i = 0; i < 50; ++i) {
+            // Generuj nowy losowy graf o rozmiarze "rozmiar"
+            vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(rozmiar, 1, 100);  // Edge values from 1 to 100
+
+            // Zwolnij istniejącą macierz kosztów, jeśli istnieje
+            if (macierzKosztow) {
+                for (size_t i = 0; i < liczbaMiast; ++i) {
+                    delete[] macierzKosztow[i];
+                }
+                delete[] macierzKosztow;
+            }
+
+            liczbaMiast = rozmiar;
+            macierzKosztow = new int*[liczbaMiast];
+            for (size_t j = 0; j < liczbaMiast; ++j) {
+                macierzKosztow[j] = new int[liczbaMiast];
+                for (size_t k = 0; k < liczbaMiast; ++k) {
+                    macierzKosztow[j][k] = matrix[j][k];
+                }
+            }
+
+            // Uruchom algorytm Brute Force i zmierz czas wykonania
+            MacierzKosztow macierz(macierzKosztow, liczbaMiast);
+            long long czasTrwania = BruteForce::uruchomAlgorytm(macierz);
+
+            // Zapisz wynik do pliku CSV
+            zapiszDoCSV(nazwaPlikuCSV, liczbaMiast, czasTrwania);
+        }
     }
 }

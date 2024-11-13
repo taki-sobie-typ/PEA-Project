@@ -7,7 +7,7 @@
 class BruteForce {
 public:
     // Statyczna metoda uruchamiająca algorytm Brute Force na podanej macierzy kosztów, rozpoczynając od wybranego miasta.
-    static void uruchomAlgorytm(const MacierzKosztow& graf, int start);
+    static long long uruchomAlgorytm(const MacierzKosztow& graf);
 };
 
 #endif // BRUTEFORCE_H

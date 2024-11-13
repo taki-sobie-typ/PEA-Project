@@ -33,6 +33,12 @@ public:
 
     // Metoda do uruchamiania algorytmu Brute Force.
     void uruchomBruteForce();
+
+    // Metoda do uruchamiania algorytmu Brute Force.
+    void zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long long czas);
+
+    // Metoda do uruchamiania algorytmu Brute Force.
+    void testForReportBruteForce();
 };
 
 #endif // GRAFMANAGER_H

@@ -24,6 +24,8 @@ private:
     // Metoda do uruchamiania testu algorytmu Brute Force.
     void testBruteForce();
 
+    void testForReportBruteForce();
+
 public:
     Menu() {}
 
