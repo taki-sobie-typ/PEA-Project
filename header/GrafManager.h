@@ -7,6 +7,7 @@
 #include "GrafGenerator.h"
 #include "CzytnikGrafow.h"
 #include "BruteForce.h"
+#include "BranchAndBound.h"
 
 using namespace std;
 
@@ -35,10 +36,13 @@ public:
     void uruchomBruteForce();
 
     // Metoda do uruchamiania algorytmu Brute Force.
+    void uruchomBranchAndBound();
+
+    // Metoda do uruchamiania algorytmu Brute Force.
     void zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long long czas);
 
     // Metoda do uruchamiania algorytmu Brute Force.
-    void testForReportBruteForce();
+    void testForReport();
 };
 
 #endif // GRAFMANAGER_H

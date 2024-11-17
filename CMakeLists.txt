@@ -25,4 +25,6 @@ add_executable(
         header/Menu.h
         source/GrafGenerator.cpp
         header/GrafGenerator.h
+        header/BranchAndBound.h
+        source/BranchAndBound.cpp
 )

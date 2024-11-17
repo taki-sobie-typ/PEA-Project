@@ -110,6 +110,17 @@ void GrafManager::uruchomBruteForce() {
     }
 }
 
+// Metoda do uruchomienia algorytmu Brute Force
+void GrafManager::uruchomBranchAndBound() {
+    if (macierzKosztow) {
+        // Utwórz obiekt macierzy kosztów i uruchom algorytm Brute Force
+        MacierzKosztow macierz(macierzKosztow, liczbaMiast);
+        BranchAndBound::uruchomAlgorytm(macierz);
+    } else {
+        cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;
+    }
+}
+
 // Metoda do zapisu wyników do pliku CSV
 void GrafManager::zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long long czas) {
     ofstream plik(nazwaPliku, ios::app);  // Open in append mode
@@ -122,7 +133,7 @@ void GrafManager::zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long lo
 }
 
 // Metoda testująca Brute Force dla raportu
-void GrafManager::testForReportBruteForce() {
+void GrafManager::testForReport() {
     string nazwaPlikuCSV = "bruteforce_report.csv";
 
     for (int rozmiar = 5; rozmiar <= 15; ++rozmiar) {

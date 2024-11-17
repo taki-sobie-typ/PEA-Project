@@ -34,9 +34,9 @@ long long BruteForce::uruchomAlgorytm(const MacierzKosztow& macierz) {
             aktualnyKoszt += tablicaKosztow[indeksyMiast[x]][indeksyMiast[x + 1]];
 
             // Jeżeli aktualny koszt przewyższa najniższy znaleziony koszt, zakończ pętlę
-            if (aktualnyKoszt >= najnizszyKoszt) {
-                break;
-            }
+            //if (aktualnyKoszt >= najnizszyKoszt) {
+            //    break;
+            //}
         }
         // Uwzględnij koszt powrotu do miasta początkowego
         aktualnyKoszt += tablicaKosztow[indeksyMiast[liczbaMiast - 1]][indeksyMiast[0]];

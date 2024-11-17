@@ -11,7 +11,8 @@ void Menu::wyswietlMenuGlowne() {
         cout << "2. Wygeneruj graf losowo" << endl;
         cout << "3. Wyswietl graf" << endl;
         cout << "4. Brute Test" << endl;
-        cout << "5. Test For Report (Brute Force)" << endl;
+        cout << "5. B&B" << endl;
+        cout << "6. Test For Report (Brute Force and B&B)" << endl;
         cout << "0. Wyjscie" << endl;
         cout << "Wybierz opcje: ";
         cin >> wybor;
@@ -32,7 +33,10 @@ void Menu::wyswietlMenuGlowne() {
                 testBruteForce(); // Wywołanie metody do uruchomienia testu algorytmu Brute Force.
                 break;
             case 5:
-                testForReportBruteForce(); // Wywołanie metody do uruchomienia testu algorytmu Brute Force.
+                testBranchAndBound(); // Wywołanie metody do uruchomienia testu algorytmu Brute Force.
+                break;
+            case 6:
+                testForReport(); // Wywołanie metody do uruchomienia testu algorytmu Brute Force.
                 break;
             case 0:
                 cout << "Koniec programu." << endl; // Zakończenie programu.
@@ -60,10 +64,15 @@ void Menu::wyswietlGraf() {
 }
 
 // Metoda wywołująca funkcję uruchomienia algorytmu Brute Force przy użyciu obiektu grafManager.
+void Menu::testBranchAndBound() {
+    grafManager.uruchomBranchAndBound();
+}
+
+// Metoda wywołująca funkcję uruchomienia algorytmu Brute Force przy użyciu obiektu grafManager.
 void Menu::testBruteForce() {
     grafManager.uruchomBruteForce();
 }
 
-void Menu::testForReportBruteForce() {
-    grafManager.testForReportBruteForce();
+void Menu::testForReport() {
+    grafManager.testForReport();
 }

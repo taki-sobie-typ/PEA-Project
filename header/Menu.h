@@ -24,7 +24,11 @@ private:
     // Metoda do uruchamiania testu algorytmu Brute Force.
     void testBruteForce();
 
-    void testForReportBruteForce();
+    // Metoda do uruchamiania testu algorytmu BrachAndBound.
+    void testBranchAndBound();
+
+    // Medota uruchamiająca procedure testowania algorytmów
+    void testForReport();
 
 public:
     Menu() {}
