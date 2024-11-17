@@ -13,15 +13,14 @@ long long BranchAndBound::uruchomAlgorytm(const MacierzKosztow& macierz) {
     auto czasStart = chrono::high_resolution_clock::now();
 
     int najnizszyKoszt = INT_MAX;
-    int aktualnyKoszt;
-    int* optymalnaSciezka = new int[liczbaMiast];
-    optymalnaSciezka[0] = 0;
+    int* optymalnaSciezka = new int[liczbaMiast + 1];
 
-    vector<Node> kolejka;
+    std::vector<Node> kolejka;
+
     Node root;
-    root.sciezka = new int[6];
+    root.sciezka = new int[liczbaMiast + 1];
     root.sciezka[0] = 0;
-    root.sciezkaCount = 0;
+    root.sciezkaCount = 1;
     root.koszt = 0;
     root.poziom = 0;
 
@@ -31,55 +30,63 @@ long long BranchAndBound::uruchomAlgorytm(const MacierzKosztow& macierz) {
         Node aktualnyNode = kolejka.front();
         kolejka.erase(kolejka.begin());
 
-        // Przycinamy gałęzie, jeśli aktualny koszt jest większy lub równy minimalnemu kosztowi
         if (aktualnyNode.koszt >= najnizszyKoszt) {
+            delete[] aktualnyNode.sciezka;
             continue;
         }
 
         if (aktualnyNode.poziom == liczbaMiast - 1) {
-            int kosztPowrotu = tablicaKosztow[aktualnyNode.sciezka[aktualnyNode.sciezkaCount]][0];
+            int kosztPowrotu = tablicaKosztow[aktualnyNode.sciezka[aktualnyNode.sciezkaCount - 1]][0];
             if (kosztPowrotu != -1) {
                 int kosztCalkowity = aktualnyNode.koszt + kosztPowrotu;
                 if (kosztCalkowity < najnizszyKoszt) {
                     najnizszyKoszt = kosztCalkowity;
-                    optymalnaSciezka = aktualnyNode.sciezka;
-                    optymalnaSciezka[aktualnyNode.sciezkaCount + 1] = 0;
+                    for (int i = 0; i < aktualnyNode.sciezkaCount; ++i) {
+                        optymalnaSciezka[i] = aktualnyNode.sciezka[i];
+                    }
+                    optymalnaSciezka[aktualnyNode.sciezkaCount] = 0;
                 }
             }
+            delete[] aktualnyNode.sciezka;
             continue;
         }
 
         for (int i = 0; i < liczbaMiast; ++i) {
+
             if (!miastoZawarteSciezka(aktualnyNode.sciezka, aktualnyNode.sciezkaCount, i)) {
-                int aktualnyKoszt = tablicaKosztow[aktualnyNode.sciezka[aktualnyNode.sciezkaCount]][i];
-                if (aktualnyKoszt != -1) {
+                int kosztPrzejscia = tablicaKosztow[aktualnyNode.sciezka[aktualnyNode.sciezkaCount - 1]][i];
+                if (kosztPrzejscia != -1) {
                     Node potomek;
-                    potomek.sciezka = aktualnyNode.sciezka;
+                    potomek.sciezka = new int[liczbaMiast + 1];
+                    std::copy(aktualnyNode.sciezka, aktualnyNode.sciezka + aktualnyNode.sciezkaCount, potomek.sciezka);
+                    potomek.sciezka[aktualnyNode.sciezkaCount] = i;
                     potomek.sciezkaCount = aktualnyNode.sciezkaCount + 1;
-                    potomek.sciezka[potomek.sciezkaCount] = i;
+                    potomek.koszt = aktualnyNode.koszt + kosztPrzejscia;
                     potomek.poziom = aktualnyNode.poziom + 1;
-                    potomek.koszt = aktualnyNode.koszt + aktualnyKoszt;
 
                     if (potomek.koszt < najnizszyKoszt) {
                         kolejka.push_back(potomek);
+                    } else {
+                        delete[] potomek.sciezka;
                     }
                 }
             }
         }
-    }
 
+        delete[] aktualnyNode.sciezka;
+    }
 
     auto czasStop = chrono::high_resolution_clock::now();
     auto czasTrwania = chrono::duration_cast<chrono::microseconds>(czasStop - czasStart);
 
-    cout << "Najkorzystniejsza trasa: 0 -> ";
-    for (int z = 1; z < liczbaMiast; z++) {
-        cout << optymalnaSciezka[z] << " -> ";
+    std::cout << "Najkorzystniejsza trasa: 0 -> ";
+    for (int i = 1; i < liczbaMiast; ++i) {
+        std::cout << optymalnaSciezka[i] << " -> ";
     }
-    cout << "0" << endl;
+    std::cout << "0\n";
 
-    cout << "Najnizszy koszt przejscia: " << najnizszyKoszt << endl;
-    cout << "Czas dzialania algorytmu pelnego przegladu: " << czasTrwania.count() << " mikrosekund" << endl;
+    std::cout << "Najnizszy koszt przejscia: " << najnizszyKoszt << "\n";
+    std::cout << "Czas dzialania algorytmu: " << czasTrwania.count() << " mikrosekund\n";
 
     delete[] optymalnaSciezka;
 
