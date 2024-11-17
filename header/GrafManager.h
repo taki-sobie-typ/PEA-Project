@@ -42,7 +42,10 @@ public:
     void zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long long czas);
 
     // Metoda do uruchamiania algorytmu Brute Force.
-    void testForReport();
+    void testForReportBF();
+
+    // Metoda do uruchamiania algorytmu Brute Force.
+    void testForReportBandB_BFS();
 };
 
 #endif // GRAFMANAGER_H

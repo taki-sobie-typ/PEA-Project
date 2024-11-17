@@ -133,7 +133,7 @@ void GrafManager::zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long lo
 }
 
 // Metoda testująca Brute Force dla raportu
-void GrafManager::testForReport() {
+void GrafManager::testForReportBF() {
     string nazwaPlikuCSV = "bruteforce_report.csv";
 
     for (int rozmiar = 5; rozmiar <= 15; ++rozmiar) {
@@ -161,6 +161,51 @@ void GrafManager::testForReport() {
             // Uruchom algorytm Brute Force i zmierz czas wykonania
             MacierzKosztow macierz(macierzKosztow, liczbaMiast);
             long long czasTrwania = BruteForce::uruchomAlgorytm(macierz);
+
+            // Zapisz wynik do pliku CSV
+            zapiszDoCSV(nazwaPlikuCSV, liczbaMiast, czasTrwania);
+        }
+    }
+}
+
+void GrafManager::testForReportBandB_BFS() {
+    string nazwaPlikuCSV = "b&b_BFS_report.csv";
+
+    for (int rozmiar = 20; rozmiar <= 30; ++rozmiar) {
+        int rozmiarInner = 50;
+        if (rozmiar > 12) {
+            rozmiarInner = 10;
+        }
+        if (rozmiar > 14) {
+            rozmiarInner = 2;
+        }
+        if (rozmiar > 16) {
+            rozmiarInner = 1;
+        }
+        for (int i = 0; i < rozmiarInner; ++i) {
+            // Generuj nowy losowy graf o rozmiarze "rozmiar"
+            vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(rozmiar, 1, 100);  // Edge values from 1 to 100
+
+            // Zwolnij istniejącą macierz kosztów, jeśli istnieje
+            if (macierzKosztow) {
+                for (size_t i = 0; i < liczbaMiast; ++i) {
+                    delete[] macierzKosztow[i];
+                }
+                delete[] macierzKosztow;
+            }
+
+            liczbaMiast = rozmiar;
+            macierzKosztow = new int*[liczbaMiast];
+            for (size_t j = 0; j < liczbaMiast; ++j) {
+                macierzKosztow[j] = new int[liczbaMiast];
+                for (size_t k = 0; k < liczbaMiast; ++k) {
+                    macierzKosztow[j][k] = matrix[j][k];
+                }
+            }
+
+            // Uruchom algorytm Brute Force i zmierz czas wykonania
+            MacierzKosztow macierz(macierzKosztow, liczbaMiast);
+            long long czasTrwania = BranchAndBound::uruchomAlgorytm(macierz);
 
             // Zapisz wynik do pliku CSV
             zapiszDoCSV(nazwaPlikuCSV, liczbaMiast, czasTrwania);

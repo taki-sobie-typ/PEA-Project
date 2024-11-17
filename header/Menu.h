@@ -28,7 +28,10 @@ private:
     void testBranchAndBound();
 
     // Medota uruchamiająca procedure testowania algorytmów
-    void testForReport();
+    void testForReportBF();
+
+    // Medota uruchamiająca procedure testowania algorytmów
+    void testForReportBandB_BFS();
 
 public:
     Menu() {}
