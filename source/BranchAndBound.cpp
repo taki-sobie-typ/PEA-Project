@@ -3,6 +3,7 @@
 #include <climits>
 #include <chrono>
 #include <vector>
+#include <queue>
 
 using namespace std;
 
@@ -15,8 +16,13 @@ long long BranchAndBound::uruchomAlgorytm(const MacierzKosztow& macierz) {
     int najnizszyKoszt = INT_MAX;
     int* optymalnaSciezka = new int[liczbaMiast + 1];
 
-    std::vector<Node> kolejka;
+    // Priority queue for B&B (min-heap based on cost + lower bound)
+    auto compare = [](const Node& a, const Node& b) {
+        return a.koszt > b.koszt; // Min-heap
+    };
+    std::priority_queue<Node, std::vector<Node>, decltype(compare)> kolejka(compare);
 
+    // Root node initialization
     Node root;
     root.sciezka = new int[liczbaMiast + 1];
     root.sciezka[0] = 0;
@@ -24,23 +30,22 @@ long long BranchAndBound::uruchomAlgorytm(const MacierzKosztow& macierz) {
     root.koszt = 0;
     root.poziom = 0;
 
-    kolejka.push_back(root);
+    // Push the root node into the queue
+    kolejka.push(root);
 
     while (!kolejka.empty()) {
-        Node aktualnyNode = kolejka.front();
-        kolejka.erase(kolejka.begin());
+        Node aktualnyNode = kolejka.top();
+        kolejka.pop();
 
-        if (aktualnyNode.koszt >= najnizszyKoszt) {
-            delete[] aktualnyNode.sciezka;
-            continue;
-        }
-
+        // Check if all cities have been visited
         if (aktualnyNode.poziom == liczbaMiast - 1) {
             int kosztPowrotu = tablicaKosztow[aktualnyNode.sciezka[aktualnyNode.sciezkaCount - 1]][0];
             if (kosztPowrotu != -1) {
                 int kosztCalkowity = aktualnyNode.koszt + kosztPowrotu;
                 if (kosztCalkowity < najnizszyKoszt) {
                     najnizszyKoszt = kosztCalkowity;
+
+                    // Update optimal path
                     for (int i = 0; i < aktualnyNode.sciezkaCount; ++i) {
                         optymalnaSciezka[i] = aktualnyNode.sciezka[i];
                     }
@@ -51,8 +56,8 @@ long long BranchAndBound::uruchomAlgorytm(const MacierzKosztow& macierz) {
             continue;
         }
 
+        // Expand child nodes
         for (int i = 0; i < liczbaMiast; ++i) {
-
             if (!miastoZawarteSciezka(aktualnyNode.sciezka, aktualnyNode.sciezkaCount, i)) {
                 int kosztPrzejscia = tablicaKosztow[aktualnyNode.sciezka[aktualnyNode.sciezkaCount - 1]][i];
                 if (kosztPrzejscia != -1) {
@@ -61,11 +66,14 @@ long long BranchAndBound::uruchomAlgorytm(const MacierzKosztow& macierz) {
                     std::copy(aktualnyNode.sciezka, aktualnyNode.sciezka + aktualnyNode.sciezkaCount, potomek.sciezka);
                     potomek.sciezka[aktualnyNode.sciezkaCount] = i;
                     potomek.sciezkaCount = aktualnyNode.sciezkaCount + 1;
-                    potomek.koszt = aktualnyNode.koszt + kosztPrzejscia;
                     potomek.poziom = aktualnyNode.poziom + 1;
 
+                    // Calculate cost for the child
+                    potomek.koszt = aktualnyNode.koszt + kosztPrzejscia;
+
+                    // Add the child node to the queue only if it's promising
                     if (potomek.koszt < najnizszyKoszt) {
-                        kolejka.push_back(potomek);
+                        kolejka.push(potomek);
                     } else {
                         delete[] potomek.sciezka;
                     }
@@ -79,8 +87,9 @@ long long BranchAndBound::uruchomAlgorytm(const MacierzKosztow& macierz) {
     auto czasStop = chrono::high_resolution_clock::now();
     auto czasTrwania = chrono::duration_cast<chrono::microseconds>(czasStop - czasStart);
 
-    std::cout << "Najkorzystniejsza trasa: 0 -> ";
-    for (int i = 1; i < liczbaMiast; ++i) {
+    // Output the optimal path
+    std::cout << "Najkorzystniejsza trasa: ";
+    for (int i = 0; i < liczbaMiast; ++i) {
         std::cout << optymalnaSciezka[i] << " -> ";
     }
     std::cout << "0\n";
