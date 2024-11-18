@@ -27,10 +27,13 @@ private:
     // Metoda do uruchamiania testu algorytmu BrachAndBound.
     void testBranchAndBound();
 
-    // Medota uruchamiająca procedure testowania algorytmów
+    // Metoda do uruchamiania testu algorytmu BrachAndBound.
+    void testForReportSymetric();
+
+    // Metoda uruchamiająca procedurę testowania algorytmów Brute Force dla raportu.
     void testForReportBF();
 
-    // Medota uruchamiająca procedure testowania algorytmów
+    // Metoda uruchamiająca procedurę testowania algorytmów BrachAndBound i BFS dla raportu.
     void testForReportBandB_BFS();
 
 public:

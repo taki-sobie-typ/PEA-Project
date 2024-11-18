@@ -12,8 +12,9 @@ void Menu::wyswietlMenuGlowne() {
         cout << "3. Wyswietl graf" << endl;
         cout << "4. Brute Test" << endl;
         cout << "5. B&B" << endl;
-        cout << "6. Test For Report (Brute Force)" << endl;
-        cout << "7. Test For Report (B&B BFS)" << endl;
+        cout << "6. Test For Report Symetric" << endl;
+        cout << "7. Test For Report (Brute Force)" << endl;
+        cout << "8. Test For Report (B&B BFS)" << endl;
         cout << "0. Wyjscie" << endl;
         cout << "Wybierz opcje: ";
         cin >> wybor;
@@ -34,13 +35,16 @@ void Menu::wyswietlMenuGlowne() {
                 testBruteForce(); // Wywołanie metody do uruchomienia testu algorytmu Brute Force.
                 break;
             case 5:
-                testBranchAndBound(); // Wywołanie metody do uruchomienia testu algorytmu Brute Force.
+                testBranchAndBound(); // Wywołanie metody do uruchomienia testu algorytmu Branch and Bound.
                 break;
             case 6:
-                testForReportBF(); // Wywołanie metody do uruchomienia testu algorytmu Brute Force.
+                testForReportSymetric(); // Wywołanie metody do uruchomienia testu algorytmu dla raportu symetrycznego.
                 break;
             case 7:
-                testForReportBandB_BFS(); // Wywołanie metody do uruchomienia testu algorytmu Brute Force.
+                testForReportBF(); // Wywołanie metody do uruchomienia testu algorytmu Brute Force dla raportu.
+                break;
+            case 8:
+                testForReportBandB_BFS(); // Wywołanie metody do uruchomienia testu algorytmu B&B i BFS dla raportu.
                 break;
             case 0:
                 cout << "Koniec programu." << endl; // Zakończenie programu.
@@ -54,33 +58,37 @@ void Menu::wyswietlMenuGlowne() {
 
 // Metoda wywołująca funkcję wczytywania danych z pliku przy użyciu obiektu grafManager.
 void Menu::wczytajDaneZPliku() {
-    grafManager.wczytajDaneZPliku();
+    grafManager.wczytajDaneZPliku(); // Wywołanie metody obiektu grafManager do wczytania danych.
 }
 
 // Metoda wywołująca funkcję generowania losowego grafu przy użyciu obiektu grafManager.
 void Menu::wygenerujGrafLosowo() {
-    grafManager.wygenerujGrafLosowo();
+    grafManager.wygenerujGrafLosowo(); // Wywołanie metody obiektu grafManager do generowania grafu.
 }
 
 // Metoda wywołująca funkcję wyświetlania macierzy kosztów przy użyciu obiektu grafManager.
 void Menu::wyswietlGraf() {
-    grafManager.wyswietlGraf();
+    grafManager.wyswietlGraf(); // Wywołanie metody obiektu grafManager do wyświetlania grafu.
 }
 
 // Metoda wywołująca funkcję uruchomienia algorytmu Brute Force przy użyciu obiektu grafManager.
 void Menu::testBranchAndBound() {
-    grafManager.uruchomBranchAndBound();
+    grafManager.uruchomBranchAndBound(); // Wywołanie metody obiektu grafManager do uruchomienia algorytmu BrachAndBound.
+}
+
+void Menu::testForReportSymetric() {
+    grafManager.testForReportSymetric(); // Wywołanie metody obiektu grafManager do uruchomienia testu dla raportu symetrycznego.
 }
 
 // Metoda wywołująca funkcję uruchomienia algorytmu Brute Force przy użyciu obiektu grafManager.
 void Menu::testBruteForce() {
-    grafManager.uruchomBruteForce();
+    grafManager.uruchomBruteForce(); // Wywołanie metody obiektu grafManager do uruchomienia algorytmu Brute Force.
 }
 
 void Menu::testForReportBF() {
-    grafManager.testForReportBF();
+    grafManager.testForReportBF(); // Wywołanie metody obiektu grafManager do uruchomienia testu algorytmu Brute Force dla raportu.
 }
 
 void Menu::testForReportBandB_BFS() {
-    grafManager.testForReportBandB_BFS();
+    grafManager.testForReportBandB_BFS(); // Wywołanie metody obiektu grafManager do uruchomienia testu algorytmu BrachAndBound i BFS dla raportu.
 }

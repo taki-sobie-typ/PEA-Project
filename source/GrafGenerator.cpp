@@ -6,7 +6,7 @@
 using namespace std;
 
 // Funkcja generująca losową macierz kosztów (macierz sąsiedztwa) dla grafu
-vector<vector<int>> GrafGenerator::generujLosowaMacierz(int rozmiar, int minWartosc, int maxWartosc) {
+vector<vector<int>> GrafGenerator::generujLosowaMacierz(int rozmiar, int minWartosc, int maxWartosc, bool symetryczna) {
     // Tworzenie dwuwymiarowego wektora o rozmiarze `rozmiar x rozmiar`
     vector<vector<int>> macierz(rozmiar, vector<int>(rozmiar));
 
@@ -19,12 +19,16 @@ vector<vector<int>> GrafGenerator::generujLosowaMacierz(int rozmiar, int minWart
             if (i == j) {
                 // Odległość do samego siebie ustawiamy na -1 (lub można ustawić na 0, jeśli to bardziej pasuje)
                 macierz[i][j] = -1;
+            } else if (symetryczna && i > j) {
+                // Jeśli graf jest symetryczny, kopiujemy wartość z macierz[j][i]
+                macierz[i][j] = macierz[j][i];
             } else {
                 // Generowanie losowej wartości w zakresie od `minWartosc` do `maxWartosc`
                 macierz[i][j] = rand() % (maxWartosc - minWartosc + 1) + minWartosc;
             }
         }
     }
+
     // Zwrócenie wygenerowanej macierzy
     return macierz;
 }

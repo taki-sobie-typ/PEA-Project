@@ -58,7 +58,7 @@ void GrafManager::wygenerujGrafLosowo() {
     cout << endl;
 
     // Wygeneruj losowy graf używając klasy GrafGenerator
-    vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(liczbaWierzcholkow, minWartosc, maxWartosc);
+    vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(liczbaWierzcholkow, minWartosc, maxWartosc, false);
 
     // Zwolnij istniejącą macierz kosztów, jeśli istnieje
     if (macierzKosztow) {
@@ -110,12 +110,12 @@ void GrafManager::uruchomBruteForce() {
     }
 }
 
-// Metoda do uruchomienia algorytmu Brute Force
+// Metoda do uruchomienia algorytmue
 void GrafManager::uruchomBranchAndBound() {
     if (macierzKosztow) {
-        // Utwórz obiekt macierzy kosztów i uruchom algorytm Brute Force
+        // Utwórz obiekt macierzy kosztów i uruchom algorytm
         MacierzKosztow macierz(macierzKosztow, liczbaMiast);
-        BranchAndBound::uruchomAlgorytm(macierz);
+        BranchAndBound::uruchomAlgorytm(macierz, 300000);
     } else {
         cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;
     }
@@ -132,14 +132,25 @@ void GrafManager::zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long lo
     }
 }
 
-// Metoda testująca Brute Force dla raportu
+// Metoda do zapisu wyników do pliku CSV
+void GrafManager::zapiszDoCSV2(const string& nazwaPliku, int liczbaMiast, long long czas, int procent, int czyprzerwany) {
+    ofstream plik(nazwaPliku, ios::app);  // Open in append mode
+    if (plik.is_open()) {
+        plik << liczbaMiast << "," << czas << "," << procent << "," << czyprzerwany << endl;
+        plik.close();
+    } else {
+        cerr << "Blad otwierania pliku do zapisu." << endl;
+    }
+}
+
+// Metoda testująca dla raportu
 void GrafManager::testForReportBF() {
     string nazwaPlikuCSV = "bruteforce_report.csv";
 
     for (int rozmiar = 5; rozmiar <= 15; ++rozmiar) {
         for (int i = 0; i < 50; ++i) {
             // Generuj nowy losowy graf o rozmiarze "rozmiar"
-            vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(rozmiar, 1, 100);  // Edge values from 1 to 100
+            vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(rozmiar, 1, 100, false);  // Edge values from 1 to 100
 
             // Zwolnij istniejącą macierz kosztów, jeśli istnieje
             if (macierzKosztow) {
@@ -158,7 +169,7 @@ void GrafManager::testForReportBF() {
                 }
             }
 
-            // Uruchom algorytm Brute Force i zmierz czas wykonania
+            // Uruchom algorytm i zmierz czas wykonania
             MacierzKosztow macierz(macierzKosztow, liczbaMiast);
             long long czasTrwania = BruteForce::uruchomAlgorytm(macierz);
 
@@ -169,22 +180,22 @@ void GrafManager::testForReportBF() {
 }
 
 void GrafManager::testForReportBandB_BFS() {
-    string nazwaPlikuCSV = "b&b_BFS_report.csv";
+    string nazwaPlikuCSV = "b&b_BFS_report_p.csv";
 
-    for (int rozmiar = 20; rozmiar <= 30; ++rozmiar) {
-        int rozmiarInner = 50;
+    for (int rozmiar = 4; rozmiar <= 30; ++rozmiar) {
+        int rozmiarInner = 20;
         if (rozmiar > 12) {
-            rozmiarInner = 10;
+            rozmiarInner = 20;
         }
         if (rozmiar > 14) {
-            rozmiarInner = 2;
+            rozmiarInner = 20;
         }
         if (rozmiar > 16) {
-            rozmiarInner = 1;
+            rozmiarInner = 5;
         }
         for (int i = 0; i < rozmiarInner; ++i) {
             // Generuj nowy losowy graf o rozmiarze "rozmiar"
-            vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(rozmiar, 1, 100);  // Edge values from 1 to 100
+            vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(rozmiar, 1, 100, false);
 
             // Zwolnij istniejącą macierz kosztów, jeśli istnieje
             if (macierzKosztow) {
@@ -203,12 +214,60 @@ void GrafManager::testForReportBandB_BFS() {
                 }
             }
 
-            // Uruchom algorytm Brute Force i zmierz czas wykonania
+            // Uruchom algorytm i zmierz czas wykonania
             MacierzKosztow macierz(macierzKosztow, liczbaMiast);
-            long long czasTrwania = BranchAndBound::uruchomAlgorytm(macierz);
+            auto [result, czyPrzerwany] = BranchAndBound::uruchomAlgorytm(macierz, 300000);
+            auto [czasTrwania, liczbaPrzetworzonychWezlow] = result;
 
             // Zapisz wynik do pliku CSV
-            zapiszDoCSV(nazwaPlikuCSV, liczbaMiast, czasTrwania);
+            zapiszDoCSV2(nazwaPlikuCSV, liczbaMiast, czasTrwania, liczbaPrzetworzonychWezlow, czyPrzerwany);
+        }
+    }
+}
+
+void GrafManager::testForReportSymetric() {
+
+    string nazwaPlikuCSV = "b&b_BFS_report_s_p.csv";
+
+    for (int rozmiar = 4; rozmiar <= 30; ++rozmiar) {
+        int rozmiarInner = 20;
+        if (rozmiar > 12) {
+            rozmiarInner = 20;
+        }
+        if (rozmiar > 14) {
+            rozmiarInner = 20;
+        }
+        if (rozmiar > 16) {
+            rozmiarInner = 5;
+        }
+        for (int i = 0; i < rozmiarInner; ++i) {
+            // Generuj nowy losowy graf o rozmiarze "rozmiar"
+            vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(rozmiar, 1, 99, true);  // Edge values from 1 to 100
+
+            // Zwolnij istniejącą macierz kosztów, jeśli istnieje
+            if (macierzKosztow) {
+                for (size_t i = 0; i < liczbaMiast; ++i) {
+                    delete[] macierzKosztow[i];
+                }
+                delete[] macierzKosztow;
+            }
+
+            liczbaMiast = rozmiar;
+            macierzKosztow = new int*[liczbaMiast];
+            for (size_t j = 0; j < liczbaMiast; ++j) {
+                macierzKosztow[j] = new int[liczbaMiast];
+                for (size_t k = 0; k < liczbaMiast; ++k) {
+                    macierzKosztow[j][k] = matrix[j][k];
+                }
+            }
+
+            // Uruchom algorytm i zmierz czas wykonania
+            MacierzKosztow macierz(macierzKosztow, liczbaMiast);
+            auto [result, czyPrzerwany] = BranchAndBound::uruchomAlgorytm(macierz, 300000);
+            auto [czasTrwania, liczbaPrzetworzonychWezlow] = result;
+
+            // Zapisz wynik do pliku CSV
+            zapiszDoCSV2(nazwaPlikuCSV, liczbaMiast, czasTrwania, liczbaPrzetworzonychWezlow, czyPrzerwany);
         }
     }
 }

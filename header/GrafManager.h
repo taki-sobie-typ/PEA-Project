@@ -23,29 +23,25 @@ public:
     GrafManager() : macierzKosztow(nullptr), liczbaMiast(0), czytnikGrafow("dane/") {}
     ~GrafManager();
 
-    // Metoda do wczytywania danych z pliku.
     void wczytajDaneZPliku();
 
-    // Metoda do generowania losowego grafu.
     void wygenerujGrafLosowo();
 
-    // Metoda do wyświetlania macierzy kosztów.
     void wyswietlGraf();
 
-    // Metoda do uruchamiania algorytmu Brute Force.
     void uruchomBruteForce();
 
-    // Metoda do uruchamiania algorytmu Brute Force.
     void uruchomBranchAndBound();
 
-    // Metoda do uruchamiania algorytmu Brute Force.
     void zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long long czas);
 
-    // Metoda do uruchamiania algorytmu Brute Force.
+    void zapiszDoCSV2(const string& nazwaPliku, int liczbaMiast, long long czas, int procent, int czyprzerwany);
+
     void testForReportBF();
 
-    // Metoda do uruchamiania algorytmu Brute Force.
     void testForReportBandB_BFS();
+
+    void testForReportSymetric();
 };
 
 #endif // GRAFMANAGER_H
