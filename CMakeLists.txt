@@ -27,4 +27,6 @@ add_executable(
         header/GrafGenerator.h
         header/BranchAndBound.h
         source/BranchAndBound.cpp
+        header/SimulatedAnnealing.h
+        source/SimulatedAnnealing.cpp
 )

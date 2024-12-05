@@ -121,6 +121,31 @@ void GrafManager::uruchomBranchAndBound() {
     }
 }
 
+// Metoda do uruchomienia algorytmue
+void GrafManager::uruchomSimulatedAnnealing() {
+    if (macierzKosztow) {
+        MacierzKosztow macierz(macierzKosztow, liczbaMiast);
+
+        double coolingFactor = 0.99;          // Cooling factor for temperature reduction
+        int maxTime = 10;                     // Maximum runtime in seconds
+        int coolingType = 1;                  // Type of cooling (1 = geometric, 2 = logarithmic, 3 = exponential)
+
+        Sa simulatedAnnealing(macierzKosztow, 12, coolingFactor, maxTime, coolingType);
+        // Run the Simulated Annealing algorithm
+        simulatedAnnealing.start();
+
+        // Output the best solution
+        cout << "\nBest Path: ";
+        for (int city : simulatedAnnealing.bestPath) {
+            cout << city << " ";
+        }
+        cout << "\nBest Cost: " << simulatedAnnealing.bestLen << "\n";
+
+    } else {
+        cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;
+    }
+}
+
 // Metoda do zapisu wyników do pliku CSV
 void GrafManager::zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long long czas) {
     ofstream plik(nazwaPliku, ios::app);  // Open in append mode

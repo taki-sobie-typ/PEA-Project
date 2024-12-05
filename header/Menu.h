@@ -27,6 +27,9 @@ private:
     // Metoda do uruchamiania testu algorytmu BrachAndBound.
     void testBranchAndBound();
 
+    // Metoda do uruchamiania testu algorytmu SimulatedAnealing.
+    void testSimulatedAnnealing();
+
     // Metoda do uruchamiania testu algorytmu BrachAndBound.
     void testForReportSymetric();
 

@@ -8,6 +8,7 @@
 #include "CzytnikGrafow.h"
 #include "BruteForce.h"
 #include "BranchAndBound.h"
+#include "SimulatedAnnealing.h"
 
 using namespace std;
 
@@ -32,6 +33,8 @@ public:
     void uruchomBruteForce();
 
     void uruchomBranchAndBound();
+
+    void uruchomSimulatedAnnealing();
 
     void zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long long czas);
 

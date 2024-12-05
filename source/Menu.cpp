@@ -12,9 +12,10 @@ void Menu::wyswietlMenuGlowne() {
         cout << "3. Wyswietl graf" << endl;
         cout << "4. Brute Test" << endl;
         cout << "5. B&B" << endl;
-        cout << "6. Test For Report Symetric" << endl;
-        cout << "7. Test For Report (Brute Force)" << endl;
-        cout << "8. Test For Report (B&B BFS)" << endl;
+        cout << "6. SimulatedAnnealing" << endl;
+        cout << "7. Test For Report Symetric" << endl;
+        cout << "8. Test For Report (Brute Force)" << endl;
+        cout << "9. Test For Report (B&B BFS)" << endl;
         cout << "0. Wyjscie" << endl;
         cout << "Wybierz opcje: ";
         cin >> wybor;
@@ -38,12 +39,15 @@ void Menu::wyswietlMenuGlowne() {
                 testBranchAndBound(); // Wywołanie metody do uruchomienia testu algorytmu Branch and Bound.
                 break;
             case 6:
-                testForReportSymetric(); // Wywołanie metody do uruchomienia testu algorytmu dla raportu symetrycznego.
+                testSimulatedAnnealing(); // Wywołanie metody do uruchomienia testu algorytmu Branch and Bound.
                 break;
             case 7:
-                testForReportBF(); // Wywołanie metody do uruchomienia testu algorytmu Brute Force dla raportu.
+                testForReportSymetric(); // Wywołanie metody do uruchomienia testu algorytmu dla raportu symetrycznego.
                 break;
             case 8:
+                testForReportBF(); // Wywołanie metody do uruchomienia testu algorytmu Brute Force dla raportu.
+                break;
+            case 9:
                 testForReportBandB_BFS(); // Wywołanie metody do uruchomienia testu algorytmu B&B i BFS dla raportu.
                 break;
             case 0:
@@ -71,9 +75,14 @@ void Menu::wyswietlGraf() {
     grafManager.wyswietlGraf(); // Wywołanie metody obiektu grafManager do wyświetlania grafu.
 }
 
-// Metoda wywołująca funkcję uruchomienia algorytmu Brute Force przy użyciu obiektu grafManager.
+// Metoda wywołująca funkcję uruchomienia algorytmu SimulatedAnnealing przy użyciu obiektu grafManager.
 void Menu::testBranchAndBound() {
     grafManager.uruchomBranchAndBound(); // Wywołanie metody obiektu grafManager do uruchomienia algorytmu BrachAndBound.
+}
+
+// Metoda wywołująca funkcję uruchomienia algorytmu SimulatedAnnealing przy użyciu obiektu grafManager.
+void Menu::testSimulatedAnnealing() {
+    grafManager.uruchomSimulatedAnnealing(); // Wywołanie metody obiektu grafManager do uruchomienia algorytmu SimulatedAnnealing.
 }
 
 void Menu::testForReportSymetric() {
