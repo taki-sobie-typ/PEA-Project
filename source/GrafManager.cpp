@@ -130,16 +130,18 @@ void GrafManager::uruchomSimulatedAnnealing() {
         int maxTime = 10;                     // Maximum runtime in seconds
         int coolingType = 1;                  // Type of cooling (1 = geometric, 2 = logarithmic, 3 = exponential)
 
-        Sa simulatedAnnealing(macierzKosztow, 12, coolingFactor, maxTime, coolingType);
+        Sa simulatedAnnealing(macierzKosztow, 14, coolingFactor, maxTime, coolingType);
         // Run the Simulated Annealing algorithm
         simulatedAnnealing.start();
 
-        // Output the best solution
-        cout << "\nBest Path: ";
-        for (int city : simulatedAnnealing.bestPath) {
-            cout << city << " ";
+        const int* bestPath = simulatedAnnealing.getBestPath();
+        int matrixSize = simulatedAnnealing.getMatrixSize();
+
+        for (int i = 0; i <= matrixSize; ++i) {
+            int city = bestPath[i];
+            cout << city << " "; // Or any other operation you need
         }
-        cout << "\nBest Cost: " << simulatedAnnealing.bestLen << "\n";
+        cout << endl;        cout << "\nBest Cost: " << simulatedAnnealing.bestLen << "\n";
 
     } else {
         cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;

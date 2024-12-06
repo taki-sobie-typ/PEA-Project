@@ -2,11 +2,14 @@
 #define SIMULATEDANNEALING_H
 
 #include <iostream>
-#include <vector>
 #include <algorithm>
+#include <cmath>
+#include <climits>
+#include <random>
 #include <chrono>
 
 using namespace std;
+
 class Sa {
 private:
     int** matrix;
@@ -16,7 +19,15 @@ private:
     int coolingType;
     int eraLen;
     double coolingFactor;
-    vector<int> testPath;
+
+    int* testPath;
+    int* bestPath;
+    int* currentPath;
+    int* wykresCzasy;
+    int* wykresBesty;
+
+    int wykresSize;
+    int wykresCapacity;
 
     void greedyAlg();
     void calcLen();
@@ -27,21 +38,20 @@ private:
     int calcBeginTemperature();
     pair<int, int> generateSwapPoints();
     void swapPoints(pair<int, int> swappedPoints);
+    void appendWykres(int czas, int best);
+
 public:
+    const int* getBestPath() const { return bestPath; } // Returns a pointer to bestPath
+    int getMatrixSize() const { return matrixSize; }   // Returns the size of the matrix
+
     void start();
-    Sa(int **matrix, int matrixSize, double coolingFactor, int maxTime, int coolingType);
+    Sa(int** matrix, int matrixSize, double coolingFactor, int maxTime, int coolingType);
     ~Sa();
 
-    vector<int> bestPath;
-    vector<int> currentPath;
     int beginningTemperature;
     int bestLen;
-    int currentLen; //stan w ktorym teraz przebywamy
+    int currentLen;
     int timeOfBestSolution;
-
-
-    vector<int> wykresCzasy;
-    vector<int> wykresBesty;
 };
 
-#endif //SIMULATEDANNEALING_H
+#endif // SIMULATEDANNEALING_H
