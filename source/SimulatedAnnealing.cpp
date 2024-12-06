@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -8,7 +7,7 @@
 #include <chrono>
 #include "../header/SimulatedAnnealing.h"
 
-Sa::Sa(int **matrix, int matrixSize, double coolingFactor, int maxTime, int coolingType) {//todo dodac reszte par tpu czas
+Sa::Sa(int **matrix, int matrixSize, double coolingFactor, int maxTime, int coolingType) {
     this->matrix = matrix;
     this->matrixSize = matrixSize;
     this->coolingFactor = coolingFactor;
@@ -101,7 +100,6 @@ void Sa::start(){
              std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - startTime).count() <= maxTime);
 }
 
-
 //algorytm chciwy
 void Sa::greedyAlg(){
     int currentCity = 0;
@@ -136,9 +134,6 @@ void Sa::greedyAlg(){
     bestLen+=matrix[currentCity][0];
 }
 
-
-
-
 //metoda obliczająca nową temperaturę w zależności od wybranego typu chłlodzenia
 double Sa::calcNewTemperature(double T, int eraNumber){
     switch (coolingType) {
@@ -152,14 +147,17 @@ double Sa::calcNewTemperature(double T, int eraNumber){
     }
     return 0;
 }
+
 //chłodzenie geometryczne
 double Sa::calcGeometricTemp(double T){
     return T*coolingFactor; //*0.995 dla 5 minut
 }
+
 //chłodzenie logarytmiczne
 double Sa::calcLogaritmicTemp(double T, int eraNumber){
     return T/(1+coolingFactor*log(eraNumber+1));
 }
+
 //chłodzenie wykładnicze
 double Sa::calcExpotentialTemp(double T, int eraNumber){
     return pow(coolingFactor, eraNumber)*T;
