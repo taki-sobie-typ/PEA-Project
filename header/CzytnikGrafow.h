@@ -11,6 +11,12 @@ class CzytnikGrafow {
 private:
     string sciezkaBazowa; // Ścieżka bazowa do plików z danymi.
 
+    // Metoda pomocnicza do wczytywania macierzy z pliku TXT.
+    int** wczytajZTxt(string nazwaPliku, size_t& liczbaMiast);
+
+    // Metoda pomocnicza do wczytywania macierzy z pliku ATSP.
+    int** wczytajZAtsp(string nazwaPliku, size_t& liczbaMiast);
+
 public:
     // Konstruktor przyjmujący ścieżkę bazową jako parametr.
     CzytnikGrafow(string sciezkaBazowa);

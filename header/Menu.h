@@ -30,6 +30,13 @@ private:
     // Metoda do uruchamiania testu algorytmu SimulatedAnealing.
     void testSimulatedAnnealing();
 
+    // Metoda do uruchamiania testu algorytmu SimulatedAnealing.
+    void testForReportSimulatedAnnealing();
+
+    void writePath();
+
+    void getAndCalculatePath();
+
     // Metoda do uruchamiania testu algorytmu BrachAndBound.
     void testForReportSymetric();
 
@@ -44,6 +51,10 @@ public:
 
     // Metoda do wyświetlania głównego menu aplikacji.
     void wyswietlMenuGlowne();
+    void ustawieniaGlobalne();
+    void wyswietlTestyMisc();
+    void wyswietlAlgoMisc();
+    void setupPath();
 };
 
 #endif // MENU_H

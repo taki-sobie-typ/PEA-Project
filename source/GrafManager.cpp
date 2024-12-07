@@ -6,6 +6,10 @@
 
 using namespace std;
 
+vector<int> sciezka;
+string nazwaPliku;
+string folderRozw;
+
 // Destruktor klasy GrafManager
 // Zwalnia pamięć zajmowaną przez macierz kosztów, jeśli została załadowana
 GrafManager::~GrafManager() {
@@ -19,7 +23,7 @@ GrafManager::~GrafManager() {
 
 // Metoda do wczytywania danych z pliku
 void GrafManager::wczytajDaneZPliku() {
-    string nazwaPliku;
+    nazwaPliku;
     cout << "Podaj nazwe pliku: ";
     cin >> nazwaPliku;
     cout << endl;
@@ -122,26 +126,13 @@ void GrafManager::uruchomBranchAndBound() {
 }
 
 // Metoda do uruchomienia algorytmue
-void GrafManager::uruchomSimulatedAnnealing() {
+void GrafManager::uruchomSimulatedAnnealing(double coolingFactor, int maxTime, int coolingType) {
     if (macierzKosztow) {
         MacierzKosztow macierz(macierzKosztow, liczbaMiast);
 
-        double coolingFactor = 0.99;          // Cooling factor for temperature reduction
-        int maxTime = 10;                     // Maximum runtime in seconds
-        int coolingType = 1;                  // Type of cooling (1 = geometric, 2 = logarithmic, 3 = exponential)
-
-        Sa simulatedAnnealing(macierzKosztow, 14, coolingFactor, maxTime, coolingType);
-        // Run the Simulated Annealing algorithm
-        simulatedAnnealing.start();
-
-        const int* bestPath = simulatedAnnealing.getBestPath();
-        int matrixSize = simulatedAnnealing.getMatrixSize();
-
-        for (int i = 0; i <= matrixSize; ++i) {
-            int city = bestPath[i];
-            cout << city << " "; // Or any other operation you need
-        }
-        cout << endl;        cout << "\nBest Cost: " << simulatedAnnealing.bestLen << "\n";
+        //SA START
+        SimulatedAnnealing::start(macierz, coolingFactor, maxTime, coolingType);
+        sciezka = SimulatedAnnealing::finalPath;
 
     } else {
         cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;
@@ -150,7 +141,7 @@ void GrafManager::uruchomSimulatedAnnealing() {
 
 // Metoda do zapisu wyników do pliku CSV
 void GrafManager::zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long long czas) {
-    ofstream plik(nazwaPliku, ios::app);  // Open in append mode
+    ofstream plik(folderRozw + nazwaPliku, ios::app);  // Open in append mode
     if (plik.is_open()) {
         plik << liczbaMiast << "," << czas << endl;
         plik.close();
@@ -161,12 +152,132 @@ void GrafManager::zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long lo
 
 // Metoda do zapisu wyników do pliku CSV
 void GrafManager::zapiszDoCSV2(const string& nazwaPliku, int liczbaMiast, long long czas, int procent, int czyprzerwany) {
-    ofstream plik(nazwaPliku, ios::app);  // Open in append mode
+    ofstream plik(folderRozw + nazwaPliku, ios::app);  // Open in append mode
     if (plik.is_open()) {
         plik << liczbaMiast << "," << czas << "," << procent << "," << czyprzerwany << endl;
         plik.close();
     } else {
         cerr << "Blad otwierania pliku do zapisu." << endl;
+    }
+}
+
+// Method to save detailed results to a CSV file
+void GrafManager::zapiszDoCSV3(const string& writeFileName,
+                              int size,
+                              long long duration,
+                              int coolingType,
+                              double beginningTemperature,
+                              long long timeOfBestSolution,
+                              int bestLen,
+                              int maxRunTime) {
+    ofstream plik(folderRozw + writeFileName + "_" +nazwaPliku, ios::app);  // Open in append mode
+    if (plik.is_open()) {
+        // Write the header row if the file is empty (optional, depending on your needs)
+        if (plik.tellp() == 0) {
+            plik << "theFileNameWhereMatrixCameFrom;size;duration;coolingType;beginningTemperature;"
+                 << "timeOfBestSolution;bestLen;maxRunTime\n";
+        }
+
+        // Write the first part of the data
+        plik << nazwaPliku << ";"
+             << size << ";"
+             << duration << ";"
+             << coolingType << ";"
+             << beginningTemperature << ";"
+             << timeOfBestSolution << ";"
+             << bestLen << ";"
+             << maxRunTime << "\n";
+
+        // Write `wykresBestLengths` values separated by `;`
+        for (size_t i = 0; i < SimulatedAnnealing::wykresBestLengths.size(); ++i) {
+            plik << SimulatedAnnealing::wykresBestLengths[i];
+            if (i != SimulatedAnnealing::wykresBestLengths.size() - 1) {
+                plik << ";";
+            }
+        }
+        plik << "\n";  // Move to the next row
+
+        // Write `wykresCurrentTemperature` values separated by `;`
+        for (size_t i = 0; i < SimulatedAnnealing::wykresCurrentTemperature.size(); ++i) {
+            plik << SimulatedAnnealing::wykresCurrentTemperature[i];
+            if (i != SimulatedAnnealing::wykresCurrentTemperature.size() - 1) {
+                plik << ";";
+            }
+        }
+        plik << "\n";  // Move to the next row
+
+        // Write `wykresCzasyOfBestLengths` values separated by `;`
+        for (size_t i = 0; i < SimulatedAnnealing::wykresCzasyOfBestLengths.size(); ++i) {
+            plik << SimulatedAnnealing::wykresCzasyOfBestLengths[i];
+            if (i != SimulatedAnnealing::wykresCzasyOfBestLengths.size() - 1) {
+                plik << ";";
+            }
+        }
+        plik << "\n";  // Final row for this entry
+
+        plik.close();  // Close the file
+        cout << "Dane zapisane do pliku: " << folderRozw + nazwaPliku << endl;
+    } else {
+        cerr << "Blad otwierania pliku do zapisu." << endl;
+    }
+}
+
+
+// Metoda do zapisu ścieżki rozwiązania do pliku txt
+void GrafManager::zapiszSciezkeDoPlikuTxt() {
+    ofstream plik(folderRozw + "sw_" + nazwaPliku);  // Open file for writing
+    if (plik.is_open()) {
+        int liczbaMiast = sciezka.size();  // Number of cities in the path
+        plik << liczbaMiast << endl;  // Write the number of cities in the first line
+
+        // Write each city in the path (including the first city again at the end to form a cycle)
+        for (size_t i = 0; i < sciezka.size(); ++i) {
+            plik << sciezka[i] << endl;  // Write each city on a new line
+        }
+
+        cout << "Sciezka zostala zapisana do pliku: " << nazwaPliku << endl;
+        plik.close();
+    } else {
+        cerr << "Blad otwierania pliku do zapisu." << endl;
+    }
+}
+
+// Metoda do wczytania ścieżki rozwiązania z pliku txt i obliczenia kosztu
+int GrafManager::wczytajSciezkeZPlikuTxt(const string& nazwaPliku) {
+    ifstream plik(folderRozw + nazwaPliku);  // Open file for reading
+    vector<int> sciezka;
+    int miasto;
+
+    if (plik.is_open()) {
+        int liczbaMiast;
+        plik >> liczbaMiast;  // Read the number of cities (first line)
+
+        // Read each city in the path (one per line)
+        while (plik >> miasto) {
+            sciezka.push_back(miasto);
+        }
+        plik.close();
+
+        // Ensure the path is a cycle (the first city should be the same as the last city)
+        if (!sciezka.empty() && sciezka.front() != sciezka.back()) {
+            sciezka.push_back(sciezka.front());  // Complete the cycle by adding the first city at the end
+        }
+
+        // Calculate the total cost of the path based on the loaded cost matrix
+        int totalCost = 0;
+        for (size_t i = 0; i < sciezka.size() - 1; ++i) {
+            int start = sciezka[i];
+            int end = sciezka[i + 1];
+            if (start < liczbaMiast && end < liczbaMiast) {
+                totalCost += macierzKosztow[start][end];  // Sum the costs from the matrix
+            }
+        }
+
+        cout << "Koszt sciezki: " << totalCost << endl;
+        return totalCost;
+    } else {
+        cerr << "Blad otwierania pliku do odczytu." << endl;
+        return -1;  // Return -1 if the file cannot be opened
     }
 }
 
@@ -295,6 +406,92 @@ void GrafManager::testForReportSymetric() {
 
             // Zapisz wynik do pliku CSV
             zapiszDoCSV2(nazwaPlikuCSV, liczbaMiast, czasTrwania, liczbaPrzetworzonychWezlow, czyPrzerwany);
+        }
+    }
+}
+
+void GrafManager::testForReportSimulatedAnnealing() {
+    // List of file names
+    vector<string> fileNames = {
+        "br17", "ft53", "ft70", "ftv33", "ftv35", "ftv38", "ftv44", "ftv47", "ftv55", "ftv64",
+        "ftv70", "ftv90", "ftv100", "ftv110", "ftv120", "ftv130", "ftv140", "ftv150", "ftv160",
+        "ftv170", "kro124", "p43", "rbg323", "rbg358", "rbg403", "rbg443", "ry48p"
+    };
+
+    // File extension for the input files
+    const string fileExtension = ".atsp";
+
+    // CSV file to save results
+    const string csvFileName = "simulated_annealing_report.csv";
+
+    // Define constants
+    const double coolingFactor = 0.99; // Cooling factor set as 0.99
+
+    for (const auto& fileName : fileNames) {
+        // Set the file name for the current graph
+        string fullFileName = fileName + fileExtension;
+        nazwaPliku = fullFileName;
+
+        cout << "Testing file: " << fullFileName << endl;
+
+        // Load the cost matrix for the current file
+        if (macierzKosztow) {
+            // Free the existing cost matrix if it exists
+            for (size_t i = 0; i < liczbaMiast; ++i) {
+                delete[] macierzKosztow[i];
+            }
+            delete[] macierzKosztow;
+            macierzKosztow = nullptr;
+        }
+
+        macierzKosztow = czytnikGrafow.wczytajMacierz(folderRozw + fullFileName, liczbaMiast);
+
+        if (!macierzKosztow) {
+            cerr << "Blad wczytywania pliku: " << fullFileName << endl;
+            continue; // Skip to the next file if loading fails
+        }
+
+        // Determine maxTime based on the size of the graph
+        int maxTime = 0; // Default value
+        if (liczbaMiast <= 20) {
+            maxTime = 2 * 60 * 1000; // 2 minutes for small graphs
+        } else if (liczbaMiast <= 100) {
+            maxTime = 4 * 60 * 1000; // 4 minutes for medium graphs
+        } else {
+            maxTime = 6 * 60 * 1000; // 6 minutes for large graphs
+        }
+
+        // Test for each cooling type
+        for (int coolingType = 1; coolingType <= 3; ++coolingType) {
+            cout << "Cooling type: " << coolingType << endl;
+
+            // Test 10 times for the given cooling type
+            for (int i = 0; i < 10; ++i) {
+                cout << "Iteration: " << (i + 1);
+
+                // Prepare matrix for Simulated Annealing
+                MacierzKosztow macierz(macierzKosztow, liczbaMiast);
+
+                // Run Simulated Annealing and get results
+                auto result = SimulatedAnnealing::start(macierz, coolingFactor, maxTime, coolingType);
+
+                // Extract values from the result
+                long long timeOfBestSolution = result.first.first.first;
+                long long duration = result.first.first.second;
+                int bestLen = result.first.second;
+                double initialTemperature = result.second.first;
+                int matrixSize = result.second.second;
+
+                // Save results to CSV
+                zapiszDoCSV3(csvFileName, matrixSize, duration, coolingType, initialTemperature,
+                             timeOfBestSolution, bestLen, maxTime);
+            }
+            cout << endl;
+
+            // Save the best path to a .txt file
+            sciezka = SimulatedAnnealing::finalPath; // Update the path from static vector
+            nazwaPliku = fileName + "_sw_" + to_string(coolingType) + ".txt";
+            zapiszSciezkeDoPlikuTxt();
         }
     }
 }
