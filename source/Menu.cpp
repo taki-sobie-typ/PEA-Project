@@ -3,7 +3,7 @@
 using namespace std;
 
 double coolingFactor = 0.99;
-int maxTime = 20000;
+int maxTime = 240000;
 int coolingType = 1;
 
 // Metoda wyświetlająca główne menu programu, umożliwiająca użytkownikowi wybór opcji.

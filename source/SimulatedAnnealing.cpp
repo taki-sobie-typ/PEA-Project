@@ -54,6 +54,7 @@ std::pair<std::pair<std::pair<long long, long long>, int>, std::pair<double, int
 
     // Liczba iteracji (kombinacji par miast)
     int eraLen = matrixSize * (matrixSize - 1) / 2;
+    //eraLen = eraLen * 2;
     int eraNumber = 0;  // Licznik epok
 
     // Rozpoczęcie pomiaru czasu
@@ -244,7 +245,8 @@ int SimulatedAnnealing::calcBeginTemperature(int **matrix, int matrixSize, int *
 
     // Liczba prób zależy od rozmiaru macierzy
     int samples = std::max(100, matrixSize * 10);
-    double scalingFactor = log(matrixSize) / 2.0; // Skalowanie na podstawie rozmiaru macierzy
+    //double scalingFactor = log(matrixSize) / 2.0; // Skalowanie na podstawie rozmiaru macierzy
+    double scalingFactor = log(matrixSize) * 2.0; // Skalowanie na podstawie rozmiaru macierzy
 
     // Wykonujemy określoną liczbę prób
     for (int i = 0; i < samples; ++i) {
