@@ -209,7 +209,7 @@ void SimulatedAnnealing::greedyAlg(int **matrix, int matrixSize, int *bestPath, 
 }
 
 // Funkcja obliczająca długość podanej ścieżki.
-void calcLen(int** matrix, int matrixSize, int* path, int& length) {
+void SimulatedAnnealing::calcLen(int** matrix, int matrixSize, int* path, int& length) {
     length = 0;  // Inicjalizacja długości ścieżki
     for (int i = 0; i < matrixSize; ++i) {
         length += matrix[path[i]][path[i + 1]];  // Sumowanie kosztów przejść między miastami
