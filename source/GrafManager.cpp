@@ -6,35 +6,35 @@
 
 using namespace std;
 
-vector<int> sciezka;
-string nazwaPliku;
-string folderRozw;
+vector<int> sciezka;  // Przechowuje ścieżkę rozwiązania (np. wynik algorytmu)
+string nazwaPliku;  // Nazwa pliku do wczytania/zapisu
+string folderRozw;  // Folder, do którego będą zapisywane wyniki
 
 // Destruktor klasy GrafManager
 // Zwalnia pamięć zajmowaną przez macierz kosztów, jeśli została załadowana
 GrafManager::~GrafManager() {
     if (macierzKosztow) {
         for (size_t i = 0; i < liczbaMiast; ++i) {
-            delete[] macierzKosztow[i];
+            delete[] macierzKosztow[i];  // Usuwamy wiersze macierzy
         }
-        delete[] macierzKosztow;
+        delete[] macierzKosztow;  // Usuwamy całą macierz
     }
 }
 
 // Metoda do wczytywania danych z pliku
 void GrafManager::wczytajDaneZPliku() {
-    nazwaPliku;
+    nazwaPliku;  // Zmienna do przechowania nazwy pliku
     cout << "Podaj nazwe pliku: ";
-    cin >> nazwaPliku;
+    cin >> nazwaPliku;  // Użytkownik podaje nazwę pliku
     cout << endl;
 
     // Zwolnij istniejącą macierz kosztów, jeśli istnieje
     if (macierzKosztow) {
         for (size_t i = 0; i < liczbaMiast; ++i) {
-            delete[] macierzKosztow[i];
+            delete[] macierzKosztow[i];  // Usuwamy wiersze macierzy
         }
-        delete[] macierzKosztow;
-        macierzKosztow = nullptr;
+        delete[] macierzKosztow;  // Usuwamy całą macierz
+        macierzKosztow = nullptr;  // Ustawiamy wskaźnik na NULL
     }
 
     // Wczytaj nowe dane z pliku
@@ -54,11 +54,11 @@ void GrafManager::wygenerujGrafLosowo() {
     int liczbaWierzcholkow, minWartosc, maxWartosc;
 
     cout << "Podaj liczbe wierzcholkow: ";
-    cin >> liczbaWierzcholkow;
+    cin >> liczbaWierzcholkow;  // Użytkownik podaje liczbę wierzchołków
     cout << "Podaj minimalna wartosc krawedzi: ";
-    cin >> minWartosc;
+    cin >> minWartosc;  // Minimalna wartość krawędzi
     cout << "Podaj maksymalna wartosc krawedzi: ";
-    cin >> maxWartosc;
+    cin >> maxWartosc;  // Maksymalna wartość krawędzi
     cout << endl;
 
     // Wygeneruj losowy graf używając klasy GrafGenerator
@@ -67,19 +67,19 @@ void GrafManager::wygenerujGrafLosowo() {
     // Zwolnij istniejącą macierz kosztów, jeśli istnieje
     if (macierzKosztow) {
         for (size_t i = 0; i < liczbaMiast; ++i) {
-            delete[] macierzKosztow[i];
+            delete[] macierzKosztow[i];  // Usuwamy wiersze macierzy
         }
-        delete[] macierzKosztow;
-        macierzKosztow = nullptr;
+        delete[] macierzKosztow;  // Usuwamy całą macierz
+        macierzKosztow = nullptr;  // Ustawiamy wskaźnik na NULL
     }
 
     // Zaktualizuj liczbaMiast i zaalokuj nową macierz kosztów
-    liczbaMiast = liczbaWierzcholkow;
-    macierzKosztow = new int*[liczbaMiast];
+    liczbaMiast = liczbaWierzcholkow;  // Aktualizujemy liczbę miast
+    macierzKosztow = new int*[liczbaMiast];  // Alokujemy pamięć na nową macierz
     for (size_t i = 0; i < liczbaMiast; ++i) {
-        macierzKosztow[i] = new int[liczbaMiast];
+        macierzKosztow[i] = new int[liczbaMiast];  // Alokujemy pamięć na wiersze macierzy
         for (size_t j = 0; j < liczbaMiast; ++j) {
-            macierzKosztow[i][j] = matrix[i][j];
+            macierzKosztow[i][j] = matrix[i][j];  // Kopiujemy wartości do nowej macierzy
         }
     }
 
@@ -93,13 +93,13 @@ void GrafManager::wyswietlGraf() {
         cout << "Macierz:" << endl;
         for (size_t i = 0; i < liczbaMiast; ++i) {
             for (size_t j = 0; j < liczbaMiast; ++j) {
-                cout << macierzKosztow[i][j] << " ";
+                cout << macierzKosztow[i][j] << " ";  // Wyświetlamy wartości macierzy
             }
             cout << endl;
         }
         cout << endl;
     } else {
-        cout << "Brak danych do wyswietlenia." << endl;
+        cout << "Brak danych do wyswietlenia." << endl;  // Jeśli brak macierzy, wyświetlamy komunikat
     }
 }
 
@@ -108,32 +108,31 @@ void GrafManager::uruchomBruteForce() {
     if (macierzKosztow) {
         // Utwórz obiekt macierzy kosztów i uruchom algorytm Brute Force
         MacierzKosztow macierz(macierzKosztow, liczbaMiast);
-        BruteForce::uruchomAlgorytm(macierz);
+        BruteForce::uruchomAlgorytm(macierz);  // Uruchamiamy algorytm Brute Force
     } else {
         cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;
     }
 }
 
-// Metoda do uruchomienia algorytmue
+// Metoda do uruchomienia algorytmu Branch and Bound
 void GrafManager::uruchomBranchAndBound() {
     if (macierzKosztow) {
         // Utwórz obiekt macierzy kosztów i uruchom algorytm
         MacierzKosztow macierz(macierzKosztow, liczbaMiast);
-        BranchAndBound::uruchomAlgorytm(macierz, 300000);
+        BranchAndBound::uruchomAlgorytm(macierz, 300000);  // Uruchamiamy algorytm Branch and Bound
     } else {
         cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;
     }
 }
 
-// Metoda do uruchomienia algorytmue
+// Metoda do uruchomienia algorytmu Simulated Annealing
 void GrafManager::uruchomSimulatedAnnealing(double coolingFactor, int maxTime, int coolingType) {
     if (macierzKosztow) {
         MacierzKosztow macierz(macierzKosztow, liczbaMiast);
 
-        //SA START
-        SimulatedAnnealing::start(macierz, coolingFactor, maxTime, coolingType);
-        sciezka = SimulatedAnnealing::finalPath;
-
+        // Uruchamiamy algorytm Simulated Annealing
+        SimulatedAnnealing::start(macierz, coolingFactor, maxTime, coolingType, false);
+        sciezka = SimulatedAnnealing::finalPath;  // Zapisujemy wynikową ścieżkę
     } else {
         cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;
     }
@@ -141,28 +140,28 @@ void GrafManager::uruchomSimulatedAnnealing(double coolingFactor, int maxTime, i
 
 // Metoda do zapisu wyników do pliku CSV
 void GrafManager::zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long long czas) {
-    ofstream plik(folderRozw + nazwaPliku, ios::app);  // Open in append mode
+    ofstream plik(folderRozw + nazwaPliku, ios::app);  // Otwieramy plik w trybie dopisywania
     if (plik.is_open()) {
-        plik << liczbaMiast << "," << czas << endl;
-        plik.close();
+        plik << liczbaMiast << "," << czas << endl;  // Zapisujemy dane do pliku
+        plik.close();  // Zamykamy plik
     } else {
         cerr << "Blad otwierania pliku do zapisu." << endl;
     }
 }
 
-// Metoda do zapisu wyników do pliku CSV
+// Metoda do zapisu szczegółowych wyników do pliku CSV
 void GrafManager::zapiszDoCSV2(const string& nazwaPliku, int liczbaMiast, long long czas, int procent, int czyprzerwany) {
-    ofstream plik(folderRozw + nazwaPliku, ios::app);  // Open in append mode
+    ofstream plik(folderRozw + nazwaPliku, ios::app);  // Otwieramy plik w trybie dopisywania
     if (plik.is_open()) {
-        plik << liczbaMiast << "," << czas << "," << procent << "," << czyprzerwany << endl;
-        plik.close();
+        plik << liczbaMiast << "," << czas << "," << procent << "," << czyprzerwany << endl;  // Zapisujemy dane do pliku
+        plik.close();  // Zamykamy plik
     } else {
         cerr << "Blad otwierania pliku do zapisu." << endl;
     }
 }
 
-// Method to save detailed results to a CSV file
-void GrafManager::zapiszDoCSV3(const string& writeFileName,
+// Funkcja zapisująca wyniki algorytmu do pliku CSV
+void GrafManager::zapiszDoCSV3(const string& csvFileName,
                               int size,
                               long long duration,
                               int coolingType,
@@ -170,125 +169,90 @@ void GrafManager::zapiszDoCSV3(const string& writeFileName,
                               long long timeOfBestSolution,
                               int bestLen,
                               int maxRunTime) {
-    ofstream plik(folderRozw + writeFileName + "_" +nazwaPliku, ios::app);  // Open in append mode
+    ofstream plik(csvFileName, ios::app); // Otwieranie pliku CSV w trybie dopisywania
     if (plik.is_open()) {
-        // Write the header row if the file is empty (optional, depending on your needs)
-        if (plik.tellp() == 0) {
-            plik << "theFileNameWhereMatrixCameFrom;size;duration;coolingType;beginningTemperature;"
-                 << "timeOfBestSolution;bestLen;maxRunTime\n";
-        }
+        // Zapisuje wyniki do pliku w odpowiednich kolumnach
+        plik << size << "," // Rozmiar macierzy
+             << duration << "," // Czas trwania obliczeń
+             << coolingType << "," // Typ schładzania (np. geometryczne, logarytmiczne, wykładnicze)
+             << beginningTemperature << "," // Początkowa temperatura
+             << timeOfBestSolution << "," // Czas, w którym znaleziono najlepsze rozwiązanie
+             << bestLen << "," // Długość najlepszego rozwiązania (najkrótsza ścieżka)
+             << maxRunTime << "\n"; // Maksymalny czas wykonania algorytmu
 
-        // Write the first part of the data
-        plik << nazwaPliku << ";"
-             << size << ";"
-             << duration << ";"
-             << coolingType << ";"
-             << beginningTemperature << ";"
-             << timeOfBestSolution << ";"
-             << bestLen << ";"
-             << maxRunTime << "\n";
-
-        // Write `wykresBestLengths` values separated by `;`
-        for (size_t i = 0; i < SimulatedAnnealing::wykresBestLengths.size(); ++i) {
-            plik << SimulatedAnnealing::wykresBestLengths[i];
-            if (i != SimulatedAnnealing::wykresBestLengths.size() - 1) {
-                plik << ";";
-            }
-        }
-        plik << "\n";  // Move to the next row
-
-        // Write `wykresCurrentTemperature` values separated by `;`
-        for (size_t i = 0; i < SimulatedAnnealing::wykresCurrentTemperature.size(); ++i) {
-            plik << SimulatedAnnealing::wykresCurrentTemperature[i];
-            if (i != SimulatedAnnealing::wykresCurrentTemperature.size() - 1) {
-                plik << ";";
-            }
-        }
-        plik << "\n";  // Move to the next row
-
-        // Write `wykresCzasyOfBestLengths` values separated by `;`
-        for (size_t i = 0; i < SimulatedAnnealing::wykresCzasyOfBestLengths.size(); ++i) {
-            plik << SimulatedAnnealing::wykresCzasyOfBestLengths[i];
-            if (i != SimulatedAnnealing::wykresCzasyOfBestLengths.size() - 1) {
-                plik << ";";
-            }
-        }
-        plik << "\n";  // Final row for this entry
-
-        plik.close();  // Close the file
-        cout << "Dane zapisane do pliku: " << folderRozw + nazwaPliku << endl;
+        plik.close(); // Zamknięcie pliku po zapisaniu
+        cout << "Detailed data appended to CSV file: " << csvFileName << endl;
     } else {
-        cerr << "Blad otwierania pliku do zapisu." << endl;
+        cerr << "Error opening CSV file for writing." << endl; // Błąd otwarcia pliku
     }
 }
 
-
-// Metoda do zapisu ścieżki rozwiązania do pliku txt
-void GrafManager::zapiszSciezkeDoPlikuTxt() {
-    ofstream plik(folderRozw + "sw_" + nazwaPliku);  // Open file for writing
+// Funkcja zapisująca ścieżkę rozwiązania do pliku txt
+void GrafManager::zapiszSciezkeDoPlikuTxt(string txtFileName) {
+    ofstream plik(folderRozw + "sw_" + txtFileName, std::ios::trunc);  // Otwieranie pliku do zapisu, w trybie nadpisywania
     if (plik.is_open()) {
-        int liczbaMiast = sciezka.size();  // Number of cities in the path
-        plik << liczbaMiast << endl;  // Write the number of cities in the first line
+        int liczbaMiast = sciezka.size();  // Liczba miast w rozwiązaniu
+        plik << liczbaMiast << endl;  // Zapisuje liczbę miast na pierwszej linii
 
-        // Write each city in the path (including the first city again at the end to form a cycle)
+        // Zapisuje każdą miasto w ścieżce (w tym pierwsze miasto na końcu, aby utworzyć cykl)
         for (size_t i = 0; i < sciezka.size(); ++i) {
-            plik << sciezka[i] << endl;  // Write each city on a new line
+            plik << sciezka[i] << endl;  // Zapisuje miasto w każdej linii
         }
 
-        cout << "Sciezka zostala zapisana do pliku: " << nazwaPliku << endl;
-        plik.close();
+        cout << "Sciezka zostala zapisana do pliku: " << txtFileName << endl; // Potwierdzenie zapisu
+        plik.close(); // Zamknięcie pliku
     } else {
-        cerr << "Blad otwierania pliku do zapisu." << endl;
+        cerr << "Blad otwierania pliku do zapisu." << endl; // Błąd otwarcia pliku
     }
 }
 
-// Metoda do wczytania ścieżki rozwiązania z pliku txt i obliczenia kosztu
+// Funkcja wczytująca ścieżkę rozwiązania z pliku txt i obliczająca koszt
 int GrafManager::wczytajSciezkeZPlikuTxt(const string& nazwaPliku) {
-    ifstream plik(folderRozw + nazwaPliku);  // Open file for reading
+    ifstream plik(folderRozw + nazwaPliku);  // Otwieranie pliku do odczytu
     vector<int> sciezka;
     int miasto;
 
     if (plik.is_open()) {
         int liczbaMiast;
-        plik >> liczbaMiast;  // Read the number of cities (first line)
+        plik >> liczbaMiast;  // Wczytanie liczby miast z pierwszej linii
 
-        // Read each city in the path (one per line)
+        // Wczytuje kolejne miasta w ścieżce
         while (plik >> miasto) {
-            sciezka.push_back(miasto);
+            sciezka.push_back(miasto); // Dodaje miasto do wektora
         }
         plik.close();
 
-        // Ensure the path is a cycle (the first city should be the same as the last city)
+        // Sprawdza, czy ścieżka jest cykliczna (pierwsze miasto musi być takie samo jak ostatnie)
         if (!sciezka.empty() && sciezka.front() != sciezka.back()) {
-            sciezka.push_back(sciezka.front());  // Complete the cycle by adding the first city at the end
+            sciezka.push_back(sciezka.front());  // Uzupełnia cykl, dodając pierwsze miasto na koniec
         }
 
-        // Calculate the total cost of the path based on the loaded cost matrix
+        // Oblicza całkowity koszt ścieżki na podstawie macierzy kosztów
         int totalCost = 0;
         for (size_t i = 0; i < sciezka.size() - 1; ++i) {
             int start = sciezka[i];
             int end = sciezka[i + 1];
             if (start < liczbaMiast && end < liczbaMiast) {
-                totalCost += macierzKosztow[start][end];  // Sum the costs from the matrix
+                totalCost += macierzKosztow[start][end];  // Sumuje koszty między miastami
             }
         }
 
-        cout << "Koszt sciezki: " << totalCost << endl;
+        cout << "Koszt sciezki: " << totalCost << endl; // Wyświetla koszt ścieżki
         return totalCost;
     } else {
-        cerr << "Blad otwierania pliku do odczytu." << endl;
-        return -1;  // Return -1 if the file cannot be opened
+        cerr << "Blad otwierania pliku do odczytu." << endl; // Błąd otwarcia pliku
+        return -1;  // Zwraca -1, jeśli plik nie został otwarty
     }
 }
 
-// Metoda testująca dla raportu
+// Funkcja testująca dla raportu, algorytm brute force
 void GrafManager::testForReportBF() {
     string nazwaPlikuCSV = "bruteforce_report.csv";
 
     for (int rozmiar = 5; rozmiar <= 15; ++rozmiar) {
         for (int i = 0; i < 50; ++i) {
-            // Generuj nowy losowy graf o rozmiarze "rozmiar"
-            vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(rozmiar, 1, 100, false);  // Edge values from 1 to 100
+            // Generuje nowy losowy graf o rozmiarze "rozmiar"
+            vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(rozmiar, 1, 100, false);  // Zakres wartości krawędzi: 1-100
 
             // Zwolnij istniejącą macierz kosztów, jeśli istnieje
             if (macierzKosztow) {
@@ -303,25 +267,27 @@ void GrafManager::testForReportBF() {
             for (size_t j = 0; j < liczbaMiast; ++j) {
                 macierzKosztow[j] = new int[liczbaMiast];
                 for (size_t k = 0; k < liczbaMiast; ++k) {
-                    macierzKosztow[j][k] = matrix[j][k];
+                    macierzKosztow[j][k] = matrix[j][k];  // Kopiuje dane z macierzy do macierzy kosztów
                 }
             }
 
-            // Uruchom algorytm i zmierz czas wykonania
+            // Uruchomienie algorytmu brute force i zmierzenie czasu wykonania
             MacierzKosztow macierz(macierzKosztow, liczbaMiast);
             long long czasTrwania = BruteForce::uruchomAlgorytm(macierz);
 
-            // Zapisz wynik do pliku CSV
+            // Zapisanie wyniku do pliku CSV
             zapiszDoCSV(nazwaPlikuCSV, liczbaMiast, czasTrwania);
         }
     }
 }
 
+// Funkcja testująca algorytm Branch and Bound dla losowych grafów nieliniowych
 void GrafManager::testForReportBandB_BFS() {
-    string nazwaPlikuCSV = "b&b_BFS_report_p.csv";
+    string nazwaPlikuCSV = "b&b_BFS_report_p.csv";  // Nazwa pliku, do którego będą zapisywane wyniki
 
+    // Pętla po różnych rozmiarach grafów (od 4 do 30)
     for (int rozmiar = 4; rozmiar <= 30; ++rozmiar) {
-        int rozmiarInner = 20;
+        int rozmiarInner = 20;  // Ustawienie liczby prób dla danego rozmiaru grafu
         if (rozmiar > 12) {
             rozmiarInner = 20;
         }
@@ -329,13 +295,15 @@ void GrafManager::testForReportBandB_BFS() {
             rozmiarInner = 20;
         }
         if (rozmiar > 16) {
-            rozmiarInner = 5;
+            rozmiarInner = 5;  // Zmniejszenie liczby prób dla większych rozmiarów
         }
+
+        // Pętla wykonująca testy dla danego rozmiaru grafu
         for (int i = 0; i < rozmiarInner; ++i) {
-            // Generuj nowy losowy graf o rozmiarze "rozmiar"
+            // Generowanie losowego grafu o rozmiarze "rozmiar"
             vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(rozmiar, 1, 100, false);
 
-            // Zwolnij istniejącą macierz kosztów, jeśli istnieje
+            // Zwolnienie pamięci zajmowanej przez poprzednią macierz kosztów (jeśli istnieje)
             if (macierzKosztow) {
                 for (size_t i = 0; i < liczbaMiast; ++i) {
                     delete[] macierzKosztow[i];
@@ -343,32 +311,33 @@ void GrafManager::testForReportBandB_BFS() {
                 delete[] macierzKosztow;
             }
 
-            liczbaMiast = rozmiar;
-            macierzKosztow = new int*[liczbaMiast];
+            liczbaMiast = rozmiar;  // Ustawienie liczby miast na rozmiar grafu
+            macierzKosztow = new int*[liczbaMiast];  // Alokacja pamięci dla nowej macierzy kosztów
             for (size_t j = 0; j < liczbaMiast; ++j) {
                 macierzKosztow[j] = new int[liczbaMiast];
                 for (size_t k = 0; k < liczbaMiast; ++k) {
-                    macierzKosztow[j][k] = matrix[j][k];
+                    macierzKosztow[j][k] = matrix[j][k];  // Kopiowanie wartości z wygenerowanego grafu
                 }
             }
 
-            // Uruchom algorytm i zmierz czas wykonania
+            // Uruchomienie algorytmu Branch and Bound i zmierzenie czasu wykonania
             MacierzKosztow macierz(macierzKosztow, liczbaMiast);
             auto [result, czyPrzerwany] = BranchAndBound::uruchomAlgorytm(macierz, 300000);
             auto [czasTrwania, liczbaPrzetworzonychWezlow] = result;
 
-            // Zapisz wynik do pliku CSV
+            // Zapisanie wyników do pliku CSV
             zapiszDoCSV2(nazwaPlikuCSV, liczbaMiast, czasTrwania, liczbaPrzetworzonychWezlow, czyPrzerwany);
         }
     }
 }
 
+// Funkcja testująca algorytm Branch and Bound dla losowych grafów symetrycznych
 void GrafManager::testForReportSymetric() {
+    string nazwaPlikuCSV = "b&b_BFS_report_s_p.csv";  // Nazwa pliku do zapisu wyników
 
-    string nazwaPlikuCSV = "b&b_BFS_report_s_p.csv";
-
+    // Pętla po różnych rozmiarach grafów (od 4 do 30)
     for (int rozmiar = 4; rozmiar <= 30; ++rozmiar) {
-        int rozmiarInner = 20;
+        int rozmiarInner = 20;  // Ustawienie liczby prób dla danego rozmiaru grafu
         if (rozmiar > 12) {
             rozmiarInner = 20;
         }
@@ -376,13 +345,15 @@ void GrafManager::testForReportSymetric() {
             rozmiarInner = 20;
         }
         if (rozmiar > 16) {
-            rozmiarInner = 5;
+            rozmiarInner = 5;  // Zmniejszenie liczby prób dla większych rozmiarów
         }
-        for (int i = 0; i < rozmiarInner; ++i) {
-            // Generuj nowy losowy graf o rozmiarze "rozmiar"
-            vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(rozmiar, 1, 99, true);  // Edge values from 1 to 100
 
-            // Zwolnij istniejącą macierz kosztów, jeśli istnieje
+        // Pętla wykonująca testy dla danego rozmiaru grafu
+        for (int i = 0; i < rozmiarInner; ++i) {
+            // Generowanie losowego grafu symetrycznego
+            vector<vector<int>> matrix = GrafGenerator::generujLosowaMacierz(rozmiar, 1, 99, true);  // Generowanie symetrycznej macierzy kosztów
+
+            // Zwolnienie pamięci zajmowanej przez poprzednią macierz kosztów (jeśli istnieje)
             if (macierzKosztow) {
                 for (size_t i = 0; i < liczbaMiast; ++i) {
                     delete[] macierzKosztow[i];
@@ -390,108 +361,183 @@ void GrafManager::testForReportSymetric() {
                 delete[] macierzKosztow;
             }
 
-            liczbaMiast = rozmiar;
-            macierzKosztow = new int*[liczbaMiast];
+            liczbaMiast = rozmiar;  // Ustawienie liczby miast na rozmiar grafu
+            macierzKosztow = new int*[liczbaMiast];  // Alokacja pamięci dla nowej macierzy kosztów
             for (size_t j = 0; j < liczbaMiast; ++j) {
                 macierzKosztow[j] = new int[liczbaMiast];
                 for (size_t k = 0; k < liczbaMiast; ++k) {
-                    macierzKosztow[j][k] = matrix[j][k];
+                    macierzKosztow[j][k] = matrix[j][k];  // Kopiowanie wartości z wygenerowanego grafu
                 }
             }
 
-            // Uruchom algorytm i zmierz czas wykonania
+            // Uruchomienie algorytmu Branch and Bound i zmierzenie czasu wykonania
             MacierzKosztow macierz(macierzKosztow, liczbaMiast);
             auto [result, czyPrzerwany] = BranchAndBound::uruchomAlgorytm(macierz, 300000);
             auto [czasTrwania, liczbaPrzetworzonychWezlow] = result;
 
-            // Zapisz wynik do pliku CSV
+            // Zapisanie wyników do pliku CSV
             zapiszDoCSV2(nazwaPlikuCSV, liczbaMiast, czasTrwania, liczbaPrzetworzonychWezlow, czyPrzerwany);
         }
     }
 }
 
+// Funkcja testująca algorytm symulowanego wyżarzania dla różnych plików grafów
 void GrafManager::testForReportSimulatedAnnealing() {
-    // List of file names
+    // Lista nazw plików wejściowych, które będą testowane
     vector<string> fileNames = {
-        "br17", "ft53", "ft70", "ftv33", "ftv35", "ftv38", "ftv44", "ftv47", "ftv55", "ftv64",
-        "ftv70", "ftv90", "ftv100", "ftv110", "ftv120", "ftv130", "ftv140", "ftv150", "ftv160",
-        "ftv170", "kro124", "p43", "rbg323", "rbg358", "rbg403", "rbg443", "ry48p"
+        "ftv55", "ftv170", "rbg358"
     };
 
-    // File extension for the input files
+    // Rozszerzenie plików wejściowych (np. .atsp)
     const string fileExtension = ".atsp";
 
-    // CSV file to save results
+    // Nazwa pliku CSV, do którego będą zapisywane wszystkie wyniki
     const string csvFileName = "simulated_annealing_report.csv";
 
-    // Define constants
-    const double coolingFactor = 0.99; // Cooling factor set as 0.99
+    // Flaga do dodania nagłówka tylko raz na początku
+    bool headerAdded = false;
 
+    // Zmienna do przechowywania poprzedniej najlepszej długości ścieżki
+    int previousBestLen = INT_MAX;
+
+    // Pętla po wszystkich plikach z listy
     for (const auto& fileName : fileNames) {
-        // Set the file name for the current graph
+        // Tworzenie pełnej nazwy pliku do odczytu
         string fullFileName = fileName + fileExtension;
         nazwaPliku = fullFileName;
 
-        cout << "Testing file: " << fullFileName << endl;
+        // Dodanie nagłówka do pliku CSV (tylko raz na początku)
+        if (!headerAdded) {
+            ofstream csvFile(csvFileName, ios::app);
+            if (csvFile.is_open()) {
+                csvFile << "Matrix Size,Duration,Cooling Type,Final Temperature,"
+                           "Time Of Best Solution,Best Path Length,Max Time\n";
+                csvFile.close();
+                headerAdded = true;
+            }
+        }
 
-        // Load the cost matrix for the current file
+        // Zapisanie nazwy pliku do CSV (przed rozpoczęciem testów)
+        cout << "Testing file: " << fullFileName << endl;
+        ofstream csvFile(csvFileName, ios::app);
+        if (csvFile.is_open()) {
+            csvFile << fullFileName << "\n";
+            csvFile.close();
+        }
+
+        // Wczytanie macierzy kosztów z pliku
         if (macierzKosztow) {
-            // Free the existing cost matrix if it exists
             for (size_t i = 0; i < liczbaMiast; ++i) {
                 delete[] macierzKosztow[i];
             }
             delete[] macierzKosztow;
             macierzKosztow = nullptr;
         }
-
-        macierzKosztow = czytnikGrafow.wczytajMacierz(folderRozw + fullFileName, liczbaMiast);
+        macierzKosztow = czytnikGrafow.wczytajMacierz(fullFileName, liczbaMiast);
 
         if (!macierzKosztow) {
-            cerr << "Blad wczytywania pliku: " << fullFileName << endl;
-            continue; // Skip to the next file if loading fails
+            cerr << "Error loading file: " << fullFileName << endl;
+            continue;
         }
 
-        // Determine maxTime based on the size of the graph
-        int maxTime = 0; // Default value
-        if (liczbaMiast <= 20) {
-            maxTime = 2 * 60 * 1000; // 2 minutes for small graphs
-        } else if (liczbaMiast <= 100) {
-            maxTime = 4 * 60 * 1000; // 4 minutes for medium graphs
+        // Określenie maksymalnego czasu trwania algorytmu w zależności od liczby miast
+        int maxTime = 0;
+        if (liczbaMiast <= 100) {
+            maxTime = 2 * 60 * 1000; // 2 minuty
+        } else if (liczbaMiast <= 200) {
+            maxTime = 4 * 60 * 1000; // 4 minuty
         } else {
-            maxTime = 6 * 60 * 1000; // 6 minutes for large graphs
+            maxTime = 6 * 60 * 1000; // 6 minut
         }
 
-        // Test for each cooling type
+        // Pętla po różnych typach schładzania
         for (int coolingType = 1; coolingType <= 3; ++coolingType) {
-            cout << "Cooling type: " << coolingType << endl;
+            // Określenie współczynnika schładzania w zależności od typu
+            double coolingFactor = 0.0;
+            if (coolingType == 1) {
+                coolingFactor = 0.99; // Geometric cooling
+            } else if (coolingType == 2) {
+                coolingFactor = 0.001; // Logarithmic cooling
+            } else if (coolingType == 3) {
+                coolingFactor = 0.9999; // Exponential cooling
+            }
 
-            // Test 10 times for the given cooling type
+            previousBestLen = INT_MAX; // Resetowanie poprzedniej najlepszej długości
+
+            cout << "Cooling type: " << coolingType << ", Cooling factor: " << coolingFactor << endl;
+
+            // Wykonywanie 10 iteracji dla danego typu schładzania
             for (int i = 0; i < 10; ++i) {
-                cout << "Iteration: " << (i + 1);
+                cout << "Iteration: " << (i + 1) << endl;
 
-                // Prepare matrix for Simulated Annealing
+                // Przygotowanie macierzy dla algorytmu
                 MacierzKosztow macierz(macierzKosztow, liczbaMiast);
 
-                // Run Simulated Annealing and get results
-                auto result = SimulatedAnnealing::start(macierz, coolingFactor, maxTime, coolingType);
+                // Uruchomienie algorytmu Simulated Annealing
+                auto result = SimulatedAnnealing::start(macierz, coolingFactor, maxTime, coolingType, true);
 
-                // Extract values from the result
+                // Wyciąganie wyników z algorytmu
                 long long timeOfBestSolution = result.first.first.first;
                 long long duration = result.first.first.second;
                 int bestLen = result.first.second;
                 double initialTemperature = result.second.first;
                 int matrixSize = result.second.second;
 
-                // Save results to CSV
+                // Zapis wyników do pliku CSV
                 zapiszDoCSV3(csvFileName, matrixSize, duration, coolingType, initialTemperature,
                              timeOfBestSolution, bestLen, maxTime);
-            }
-            cout << endl;
 
-            // Save the best path to a .txt file
-            sciezka = SimulatedAnnealing::finalPath; // Update the path from static vector
-            nazwaPliku = fileName + "_sw_" + to_string(coolingType) + ".txt";
-            zapiszSciezkeDoPlikuTxt();
+                // Zapisanie wyników do osobnego pliku dla najlepszej ścieżki
+                if (bestLen < previousBestLen) {
+                    previousBestLen = bestLen;
+
+                    // Generowanie nazwy pliku do zapisania wektorów
+                    string baseFileName = fileName + "c_type_" + to_string(coolingType) + "_best_path";
+
+                    // Zapisuje wektory najlepszego rozwiązania do pliku
+                    ofstream bestVectorsFile("rozw/" + baseFileName + "__vectors.txt", ios::trunc);
+
+                    if (bestVectorsFile.is_open()) {
+                        // Zapis wykresów najlepszych długości
+                        for (size_t i = 0; i < SimulatedAnnealing::wykresBestLengths.size(); ++i) {
+                            bestVectorsFile << SimulatedAnnealing::wykresBestLengths[i];
+                            if (i != SimulatedAnnealing::wykresBestLengths.size() - 1) {
+                                bestVectorsFile << ",";
+                            }
+                        }
+                        bestVectorsFile << "\n";  // Nowa linia po wykresBestLengths
+                    }
+
+                    if (bestVectorsFile.is_open()) {
+                        // Zapis wykresów aktualnej temperatury
+                        for (size_t i = 0; i < SimulatedAnnealing::wykresCurrentTemperature.size(); ++i) {
+                            bestVectorsFile << SimulatedAnnealing::wykresCurrentTemperature[i];
+                            if (i != SimulatedAnnealing::wykresCurrentTemperature.size() - 1) {
+                                bestVectorsFile << ",";
+                            }
+                        }
+                        bestVectorsFile << "\n";  // Nowa linia po wykresCurrentTemperature
+                    }
+
+                    if (bestVectorsFile.is_open()) {
+                        // Zapis wykresów czasów najlepszych długości
+                        for (size_t i = 0; i < SimulatedAnnealing::wykresCzasyOfBestLengths.size(); ++i) {
+                            bestVectorsFile << SimulatedAnnealing::wykresCzasyOfBestLengths[i];
+                            if (i != SimulatedAnnealing::wykresCzasyOfBestLengths.size() - 1) {
+                                bestVectorsFile << ",";
+                            }
+                        }
+                        bestVectorsFile << "\n";  // Nowa linia po wykresCzasyOfBestLengths
+                    }
+
+                    bestVectorsFile.close();
+
+                    // Zapisanie najlepszej ścieżki do pliku TXT
+                    sciezka = SimulatedAnnealing::finalPath; // Aktualizacja ścieżki z wektora statycznego
+                    string txtFileName = baseFileName;
+                    zapiszSciezkeDoPlikuTxt(txtFileName); // Zapisanie ścieżki do pliku TXT
+                }
+            }
         }
     }
 }

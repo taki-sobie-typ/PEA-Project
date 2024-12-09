@@ -211,7 +211,7 @@ void Menu::testSimulatedAnnealing() {
 }
 
 void Menu::writePath() {
-    grafManager.zapiszSciezkeDoPlikuTxt(); // Wywołanie metody obiektu grafManager do uruchomienia algorytmu SimulatedAnnealing.
+    grafManager.zapiszSciezkeDoPlikuTxt("savedPath"); // Wywołanie metody obiektu grafManager do uruchomienia algorytmu SimulatedAnnealing.
 }
 
 void Menu::getAndCalculatePath() {

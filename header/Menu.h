@@ -33,8 +33,10 @@ private:
     // Metoda do uruchamiania testu algorytmu SimulatedAnealing.
     void testForReportSimulatedAnnealing();
 
+    // Metoda do zapisywania sciezki
     void writePath();
 
+    // Metoda do obliczania i pobierania sciezki
     void getAndCalculatePath();
 
     // Metoda do uruchamiania testu algorytmu BrachAndBound.
