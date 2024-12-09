@@ -208,7 +208,7 @@ void GrafManager::zapiszSciezkeDoPlikuTxt(string txtFileName) {
 
 // Funkcja wczytująca ścieżkę rozwiązania z pliku txt i obliczająca koszt
 int GrafManager::wczytajSciezkeZPlikuTxt(const string& nazwaPliku) {
-    ifstream plik(folderRozw + nazwaPliku);  // Otwieranie pliku do odczytu
+    ifstream plik(folderRozw + "sw_" + nazwaPliku);  // Otwieranie pliku do odczytu
     vector<int> sciezka;
     int miasto;
 
