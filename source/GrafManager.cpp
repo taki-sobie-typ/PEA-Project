@@ -138,6 +138,144 @@ void GrafManager::uruchomSimulatedAnnealing(double coolingFactor, int maxTime, i
     }
 }
 
+// Metoda do uruchomienia algorytmu genetycznego
+void GrafManager::uruchomGeneticAlgorithm() {
+    if (macierzKosztow) {
+        cout << "TO JEST GENETYCZNY" << endl;
+        // Utwórz obiekt macierzy kosztów
+        MacierzKosztow macierz(macierzKosztow, liczbaMiast);
+
+        // Parametry algorytmu genetycznego
+        int populationSize = 600;        // Rozmiar populacji
+        int stopTime = 500;               // Czas trwania algorytmu w sekundach
+        double mutationRate = 0.01;       // Prawdopodobieństwo mutacji
+        double crossoverRate = 0.8;     // Prawdopodobieństwo krzyżowania
+        Mutation mutationType = inverseMut; // Typ mutacji (swap lub inversja)
+
+        // Utwórz obiekt algorytmu genetycznego
+        GeneticAlgorithm geneticAlgorithm(macierz);
+
+        // Uruchom algorytm
+        Individual bestIndividual = geneticAlgorithm.run(stopTime, populationSize, mutationRate, crossoverRate, mutationType);
+
+        // Wyświetl najlepsze znalezione rozwiązanie
+        cout << "Najlepsza znaleziona sciezka: ";
+        for (int city : bestIndividual.path) {
+            cout << city << " ";
+        }
+        cout << endl;
+
+        cout << "Koszt najlepszej sciezki: " << bestIndividual.cost << endl;
+    } else {
+        cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;
+    }
+}
+
+void GrafManager::testForReportGeneticAlgorithm() {
+    // Lista rozmiarów populacji do przetestowania
+    std::vector<int> populationSizes = {200, 400, 600};
+
+    // Lista typów mutacji
+    std::vector<Mutation> mutationTypes = {swapMut, inverseMut};
+
+    // Liczba powtórzeń dla każdego przypadku
+    const int repetitions = 10;
+
+    // Plik z wynikami ogólnymi (najkrótsza ścieżka dla każdego przypadku)
+    const std::string mainGeneticCsvFile = "genetic_algorithm_report_main.csv";
+
+    // Nagłówki dla plików CSV
+    std::ofstream resultsCsv(mainGeneticCsvFile);
+
+    // Wczytaj plik grafu ftv170.atsp
+    const std::string fileName = "ftv170.atsp";
+
+    // Wczytanie macierzy kosztów z pliku
+    if (macierzKosztow) {
+        for (size_t i = 0; i < liczbaMiast; ++i) {
+            delete[] macierzKosztow[i];
+        }
+        delete[] macierzKosztow;
+        macierzKosztow = nullptr;
+    }
+    macierzKosztow = czytnikGrafow.wczytajMacierz(fileName, liczbaMiast);
+
+    if (!macierzKosztow) {
+        std::cerr << "Nie można załadować pliku grafu: " << fileName << std::endl;
+        return;
+    }
+
+    for (int populationSize : populationSizes) {
+
+                if (resultsCsv.is_open()) {
+                    resultsCsv << populationSize << "\n";
+                }
+
+        for (Mutation mutationType : mutationTypes) {
+
+                if (resultsCsv.is_open()) {
+                    resultsCsv << (mutationType == swapMut ? "swapMut" : "inverseMut") << "\n";
+                }
+
+                // Przechowywanie poprzedniego najlepszego wyniku (dla porównania w detailedCsv)
+                int previousBestLength = INT_MAX;
+
+            for (int i = 0; i < repetitions; ++i) {
+                // Parametry algorytmu
+                int stopTime = 60;               // Czas trwania algorytmu w sekundach
+                double mutationRate = 0.01;       // Prawdopodobieństwo mutacji
+                double crossoverRate = 0.8;      // Prawdopodobieństwo krzyżowania
+
+                // Utwórz obiekt macierzy kosztów
+                MacierzKosztow macierz(macierzKosztow, liczbaMiast);
+
+                // Utwórz obiekt algorytmu genetycznego
+                GeneticAlgorithm geneticAlgorithm(macierz);
+
+                // Uruchom algorytm genetyczny
+                Individual bestIndividual = geneticAlgorithm.run(
+                    stopTime, populationSize, mutationRate, crossoverRate, mutationType
+                );
+
+                // Zapisz wynik do pliku CSV
+                if (resultsCsv.is_open()) {
+                    resultsCsv << bestIndividual.cost << "\n";
+                }
+
+                // Jeśli znaleziono lepsze rozwiązanie niż poprzednie, zapisz dane do szczegółowego CSV
+                if (bestIndividual.cost < previousBestLength) {
+                    previousBestLength = bestIndividual.cost;
+                    // Plik z danymi do wykresów (znalezienie lepszego rozwiązania w czasie)
+                    string mutationTypeNow = mutationType == swapMut ? "swapMut" : "inverseMut";
+
+                    std::string detailedGeneticCsvFileActual = "genetic_algorithm_report_detailed_" + string(mutationTypeNow) + "_" + to_string(populationSize) + string(".csv");
+
+                    std::ofstream detailedCsvNow(detailedGeneticCsvFileActual);
+
+                    const auto& bestSolutions = geneticAlgorithm.getBestSolutionFoundInTime();
+                    if (detailedCsvNow.is_open()) {
+                            detailedCsvNow << "Time" << "," << "BestLength" << "\n";
+                        for (const auto& solution : bestSolutions) {
+                            double time = solution.first;      // Extract time (double)
+                            int bestLength = solution.second;  // Extract best length (int)
+
+                            // Write to CSV in format: double, int, \n
+                            detailedCsvNow << time << "," << bestLength << "\n";
+                        }
+                    }
+                    detailedCsvNow.close();
+                }
+            }
+        }
+    }
+
+    resultsCsv.close();
+
+    std::cout << "Testowanie algorytmu genetycznego zakonczone. Wyniki zapisano do plikow CSV." << std::endl;
+}
+
+
+
 // Metoda do zapisu wyników do pliku CSV
 void GrafManager::zapiszDoCSV(const string& nazwaPliku, int liczbaMiast, long long czas) {
     ofstream plik(folderRozw + nazwaPliku, ios::app);  // Otwieramy plik w trybie dopisywania

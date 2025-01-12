@@ -29,4 +29,6 @@ add_executable(
         source/BranchAndBound.cpp
         header/SimulatedAnnealing.h
         source/SimulatedAnnealing.cpp
+        source/GeneticAlgorithm.cpp
+        header/GeneticAlgorithm.h
 )

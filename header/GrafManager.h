@@ -7,6 +7,7 @@
 #include "GrafGenerator.h"
 #include "CzytnikGrafow.h"
 #include "BruteForce.h"
+#include "GeneticAlgorithm.h"
 #include "BranchAndBound.h"
 #include "SimulatedAnnealing.h"
 
@@ -54,6 +55,9 @@ public:
     // Uruchamia algorytm Branch and Bound dla problemu TSP.
     void uruchomBranchAndBound();
 
+    // Uruchamia algorytm Genetyczny z parametrami dla problemu TSP.
+    void uruchomGeneticAlgorithm();
+
     // Uruchamia algorytm symulowanego wyżarzania.
     void uruchomSimulatedAnnealing(double coolingFactor, int maxTime, int coolingType);
 
@@ -78,6 +82,9 @@ public:
 
     // Testuje rozwiązania symetryczne dla raportu.
     void testForReportSymetric();
+
+    // Testuje algorytm genetyczny dla raportu.
+    void testForReportGeneticAlgorithm();
 };
 
 #endif // GRAFMANAGER_H

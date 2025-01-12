@@ -2,61 +2,44 @@
 #define MENU_H
 
 #include <iostream>
-#include <string>
-#include "GrafManager.h"
+#include "../header/GrafManager.h" // Adjust the path if necessary
 
-using namespace std;
+// Enum for all possible actions
+enum Action {
+    LOAD_DATA,
+    GENERATE_GRAPH,
+    DISPLAY_GRAPH,
+    RUN_BNB,
+    RUN_SA,
+    RUN_GENETIC,
+    WRITE_PATH,
+    READ_PATH,
+    TEST_SA_REPORT,
+    TEST_SYMMETRIC_REPORT,
+    TEST_BRUTE_FORCE,
+    TEST_BF_REPORT,
+    TEST_BNB_BFS_REPORT,
+    TEST_GEN_REPORT,
+    INVALID_ACTION
+};
 
-// Klasa odpowiedzialna za wyświetlanie menu aplikacji i obsługę interakcji z użytkownikiem.
+// Menu class declaration
 class Menu {
-private:
-    GrafManager grafManager; // Obiekt do zarządzania operacjami na grafach.
+    GrafManager grafManager; // Manager for graph-related operations
+    void executeAction(Action action); // Central dispatcher for actions
 
-    // Metoda do wczytywania danych z pliku.
-    void wczytajDaneZPliku();
+    void wyswietlSubmenuGraf();    // Graph operations menu
+    void wyswietlSubmenuAlgorytmy(); // Optimization algorithms menu
+    void setupPath();              // Path operations menu
+    void wyswietlTestyMisc();      // Report tests menu
 
-    // Metoda do generowania losowego grafu.
-    void wygenerujGrafLosowo();
-
-    // Metoda do wyświetlania macierzy kosztów.
-    void wyswietlGraf();
-
-    // Metoda do uruchamiania testu algorytmu Brute Force.
-    void testBruteForce();
-
-    // Metoda do uruchamiania testu algorytmu BrachAndBound.
-    void testBranchAndBound();
-
-    // Metoda do uruchamiania testu algorytmu SimulatedAnealing.
-    void testSimulatedAnnealing();
-
-    // Metoda do uruchamiania testu algorytmu SimulatedAnealing.
-    void testForReportSimulatedAnnealing();
-
-    // Metoda do zapisywania sciezki
-    void writePath();
-
-    // Metoda do obliczania i pobierania sciezki
-    void getAndCalculatePath();
-
-    // Metoda do uruchamiania testu algorytmu BrachAndBound.
-    void testForReportSymetric();
-
-    // Metoda uruchamiająca procedurę testowania algorytmów Brute Force dla raportu.
-    void testForReportBF();
-
-    // Metoda uruchamiająca procedurę testowania algorytmów BrachAndBound i BFS dla raportu.
-    void testForReportBandB_BFS();
+    // Global settings
+    void ustawieniaGlobalne(); // Settings for algorithms (e.g., cooling factor)
 
 public:
-    Menu() {}
+    Menu() {};             // Default constructor
 
-    // Metoda do wyświetlania głównego menu aplikacji.
-    void wyswietlMenuGlowne();
-    void ustawieniaGlobalne();
-    void wyswietlTestyMisc();
-    void wyswietlAlgoMisc();
-    void setupPath();
+    void wyswietlMenuGlowne();     // Main menu
 };
 
 #endif // MENU_H

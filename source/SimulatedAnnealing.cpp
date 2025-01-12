@@ -242,6 +242,7 @@ int SimulatedAnnealing::calcBeginTemperature(int **matrix, int matrixSize, int *
                          std::uniform_real_distribution<> &dis) {
     int minLen = INT_MAX;
     int maxLen = 0;
+    int testLen = pathLen;
 
     // Liczba prób zależy od rozmiaru macierzy
     int samples = std::max(100, matrixSize * 10);
@@ -251,7 +252,6 @@ int SimulatedAnnealing::calcBeginTemperature(int **matrix, int matrixSize, int *
     // Wykonujemy określoną liczbę prób
     for (int i = 0; i < samples; ++i) {
         swapPoints(path, matrixSize, gen, dis); // Losowa zamiana punktów w ścieżce
-        int testLen;
         calcLen(matrix, matrixSize, path, testLen);
         minLen = std::min(minLen, testLen); // Aktualizacja minimalnej długości
         maxLen = std::max(maxLen, testLen); // Aktualizacja maksymalnej długości
