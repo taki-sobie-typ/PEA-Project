@@ -7,6 +7,13 @@ double coolingFactor = 0.99;
 int maxTime = 240000;
 int coolingType = 1;
 
+// Parametry algorytmu genetycznego
+int populationSize = 500;        // Rozmiar populacji
+int stopTime = 30;               // Czas trwania algorytmu w sekundach
+double mutationRate = 0.01;       // Prawdopodobieństwo mutacji
+double crossoverRate = 0.8;     // Prawdopodobieństwo krzyżowania
+Mutation mutationType = inverseMut; // Typ mutacji (swap lub inversja)
+
 // Central dispatcher for executing actions
 void Menu::executeAction(Action action) {
     switch (action) {
@@ -26,7 +33,7 @@ void Menu::executeAction(Action action) {
             grafManager.uruchomSimulatedAnnealing(coolingFactor, maxTime, coolingType);
             break;
         case RUN_GENETIC:
-            grafManager.uruchomGeneticAlgorithm();
+            grafManager.uruchomGeneticAlgorithm(populationSize, stopTime, mutationRate, crossoverRate, mutationType);
             break;
         case WRITE_PATH:
             grafManager.zapiszSciezkeDoPlikuTxt("savedPath");
@@ -64,7 +71,7 @@ void Menu::wyswietlMenuGlowne() {
     do {
         cout << "\n===== MENU GLOWNE =====" << endl;
         cout << "1. Operacje na grafie" << endl;
-        cout << "2. Algorytmy optymalizacyjne" << endl;
+        cout << "2. Algorytmy" << endl;
         cout << "3. Ustawienia" << endl;
         cout << "0. Wyjscie" << endl;
         cout << "Wybierz opcje: ";
@@ -99,7 +106,7 @@ void Menu::wyswietlSubmenuGraf() {
         cout << "2. Wygeneruj losowy graf" << endl;
         cout << "3. Wyswietl graf" << endl;
         cout << "4. Operacje na sciezce" << endl;
-        cout << "0. Powrut do menu gluwnego" << endl;
+        cout << "0. Powrot" << endl;
         cout << "Wybierz opcje: ";
         cin >> wybor;
         cout << endl;
@@ -130,12 +137,12 @@ void Menu::wyswietlSubmenuAlgorytmy() {
     int wybor;
     do {
         cout << "\n===== ALGORYTMY =====" << endl;
-        cout << "1. Simulated Annealing" << endl;
+        cout << "1. Algorytm Simulated Annealing" << endl;
         cout << "2. Algorytm Genetyczny" << endl;
         cout << "3. Algorytm Brute Force" << endl;
-        cout << "4. Branch and Bound" << endl;
-        cout << "5. Testy dla raportu" << endl;
-        cout << "0. Powrut do menu gluwnego" << endl;
+        cout << "4. Algorytm Branch and Bound" << endl;
+        cout << "5. Testy do raportu" << endl;
+        cout << "0. Powrot" << endl;
         cout << "Wybierz opcje: ";
         cin >> wybor;
         cout << endl;
@@ -168,10 +175,10 @@ void Menu::wyswietlSubmenuAlgorytmy() {
 void Menu::setupPath() {
     int wybor;
     do {
-        cout << "\n===== OPERACJE NA ŚCIEŻCE =====" << endl;
+        cout << "\n===== OPERACJE NA SCIEZCE =====" << endl;
         cout << "1. Wczytaj i oblicz sciezke" << endl;
         cout << "2. Zapisz sciezke" << endl;
-        cout << "0. Powrut do menu gluwnego" << endl;
+        cout << "0. Powrot" << endl;
         cout << "Wybierz opcje: ";
         cin >> wybor;
         cout << endl;
@@ -196,11 +203,11 @@ void Menu::wyswietlTestyMisc() {
     int wybor;
     do {
         cout << "\n===== TESTY DLA RAPORTU =====" << endl;
-        cout << "1. Test dla grafu symetrycznego" << endl;
+        cout << "1. Test dla algorytmu Brute Force (symetrycznie)" << endl;
         cout << "2. Test dla algorytmu Brute Force" << endl;
         cout << "3. Test dla algorytmu Branch and Bound (BFS)" << endl;
         cout << "4. Test dla algorytmu Genetcznego" << endl;
-        cout << "0. Powrut do menu gluwnego" << endl;
+        cout << "0. Powrot" << endl;
         cout << "Wybierz opcje: ";
         cin >> wybor;
         cout << endl;
@@ -221,7 +228,7 @@ void Menu::wyswietlTestyMisc() {
             case 0:
                 break;
             default:
-                cout << "Nieprawidlowy wybur. Sprubuj ponownie." << endl;
+                cout << "Nieprawidlowy wybor. Sprobuj ponownie." << endl;
         }
     } while (wybor != 0);
 }
@@ -232,10 +239,38 @@ void Menu::ustawieniaGlobalne() {
     int wybor;
     do {
         cout << "\n===== USTAWIENIA GLOBALNE =====" << endl;
+        cout << "1. Ustawienia Simulated Annealing" << endl;
+        cout << "2. Ustawienia Algorytmu Genetycznego" << endl;
+        cout << "0. Powrot" << endl;
+        cout << "Wybierz opcje: ";
+        cin >> wybor;
+        cout << endl;
+
+        switch (wybor) {
+            case 1:
+                ustawieniaSimulatedAnnealing();
+            break;
+            case 2:
+                ustawieniaGeneticAlgorithm();
+            break;
+            case 0:
+                break; // Return to the main menu
+            default:
+                cout << "Nieprawidlowy wybor. Sprobuj ponownie." << endl;
+        }
+        cout << endl;
+    } while (wybor != 0);
+}
+
+// Global Settings Menu for Simulated Annealing
+void Menu::ustawieniaSimulatedAnnealing() {
+    int wybor;
+    do {
+        cout << "\n===== USTAWIENIA SIMULATED ANNEALING =====" << endl;
         cout << "1. Ustaw Cooling Factor (aktualnie: " << coolingFactor << ")" << endl;
         cout << "2. Ustaw Max Time (aktualnie: " << maxTime << ")" << endl;
         cout << "3. Ustaw Cooling Type (aktualnie: " << coolingType << ")" << endl;
-        cout << "0. Powrot do menu glownego" << endl;
+        cout << "0. Powrot" << endl;
         cout << "Wybierz opcje: ";
         cin >> wybor;
         cout << endl;
@@ -254,7 +289,60 @@ void Menu::ustawieniaGlobalne() {
                 cin >> coolingType;
                 break;
             case 0:
-                break; // Powrut do menu gluwnego
+                break; // Return to the main menu
+            default:
+                cout << "Nieprawidlowy wybor. Sprobuj ponownie." << endl;
+        }
+        cout << endl;
+    } while (wybor != 0);
+}
+
+// Global Settings Menu for Genetic Algorithm
+void Menu::ustawieniaGeneticAlgorithm() {
+    int wybor;
+    do {
+        cout << "\n===== USTAWIENIA ALGORYTMU GENETYCZNEGO =====" << endl;
+        cout << "1. Ustaw Population Size (aktualnie: " << populationSize << ")" << endl;
+        cout << "2. Ustaw Stop Time (aktualnie: " << stopTime << ")" << endl;
+        cout << "3. Ustaw Mutation Rate (aktualnie: " << mutationRate << ")" << endl;
+        cout << "4. Ustaw Crossover Rate (aktualnie: " << crossoverRate << ")" << endl;
+        cout << "5. Ustaw Mutation Type (aktualnie: " << (mutationType == inverseMut ? "inverse" : "swap") << ")" << endl;
+        cout << "0. Powrot" << endl;
+        cout << "Wybierz opcje: ";
+        cin >> wybor;
+        cout << endl;
+
+        switch (wybor) {
+            case 1:
+                cout << "Podaj nowy Population Size: ";
+                cin >> populationSize;
+                break;
+            case 2:
+                cout << "Podaj nowy Stop Time (sekundy): ";
+                cin >> stopTime;
+                break;
+            case 3:
+                cout << "Podaj nowy Mutation Rate (np. 0.01): ";
+                cin >> mutationRate;
+                break;
+            case 4:
+                cout << "Podaj nowy Crossover Rate (np. 0.8): ";
+                cin >> crossoverRate;
+                break;
+            case 5:
+                int mutationChoice;
+                cout << "Wybierz Mutation Type (1 = swap, 2 = inverse): ";
+                cin >> mutationChoice;
+                if (mutationChoice == 1) {
+                    mutationType = swapMut;
+                } else if (mutationChoice == 2) {
+                    mutationType = inverseMut;
+                } else {
+                    cout << "Nieprawidlowy wybor. Pozostawiono obecny typ mutacji." << endl;
+                }
+                break;
+            case 0:
+                break; // Return to the main menu
             default:
                 cout << "Nieprawidlowy wybor. Sprobuj ponownie." << endl;
         }

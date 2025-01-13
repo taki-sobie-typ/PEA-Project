@@ -33,6 +33,9 @@ class Menu {
     void setupPath();              // Path operations menu
     void wyswietlTestyMisc();      // Report tests menu
 
+    void ustawieniaSimulatedAnnealing();
+    void ustawieniaGeneticAlgorithm();
+
     // Global settings
     void ustawieniaGlobalne(); // Settings for algorithms (e.g., cooling factor)
 

@@ -139,18 +139,18 @@ void GrafManager::uruchomSimulatedAnnealing(double coolingFactor, int maxTime, i
 }
 
 // Metoda do uruchomienia algorytmu genetycznego
-void GrafManager::uruchomGeneticAlgorithm() {
+void GrafManager::uruchomGeneticAlgorithm(int populationSize, int stopTime, double mutationRate, double crossoverRate, Mutation mutationType) {
     if (macierzKosztow) {
         cout << "TO JEST GENETYCZNY" << endl;
         // Utwórz obiekt macierzy kosztów
         MacierzKosztow macierz(macierzKosztow, liczbaMiast);
 
         // Parametry algorytmu genetycznego
-        int populationSize = 600;        // Rozmiar populacji
-        int stopTime = 500;               // Czas trwania algorytmu w sekundach
-        double mutationRate = 0.01;       // Prawdopodobieństwo mutacji
-        double crossoverRate = 0.8;     // Prawdopodobieństwo krzyżowania
-        Mutation mutationType = inverseMut; // Typ mutacji (swap lub inversja)
+        populationSize = 600;        // Rozmiar populacji
+        stopTime = 500;               // Czas trwania algorytmu w sekundach
+        mutationRate = 0.01;       // Prawdopodobieństwo mutacji
+        crossoverRate = 0.8;     // Prawdopodobieństwo krzyżowania
+        mutationType = inverseMut; // Typ mutacji (swap lub inversja)
 
         // Utwórz obiekt algorytmu genetycznego
         GeneticAlgorithm geneticAlgorithm(macierz);

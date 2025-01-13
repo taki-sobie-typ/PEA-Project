@@ -56,7 +56,7 @@ public:
     void uruchomBranchAndBound();
 
     // Uruchamia algorytm Genetyczny z parametrami dla problemu TSP.
-    void uruchomGeneticAlgorithm();
+    void uruchomGeneticAlgorithm(int populationSize, int stopTime, double mutationRate, double crossoverRate, Mutation mutationType);
 
     // Uruchamia algorytm symulowanego wyżarzania.
     void uruchomSimulatedAnnealing(double coolingFactor, int maxTime, int coolingType);
