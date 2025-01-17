@@ -1,44 +1,61 @@
-#ifndef GENETIC_ALGORITHM_H
-#define GENETIC_ALGORITHM_H
+#ifndef ALGORYTM_GENETYCZNY_H
+#define ALGORYTM_GENETYCZNY_H
 
-#include <vector>
-#include <list>
-#include <algorithm>
-#include "MacierzKosztow.h"
+// Biblioteki standardowe
+#include <vector>  // Do przechowywania wektorów (np. ścieżek osobników).
+#include <list>  // Do przechowywania listy najlepszych rozwiązań w czasie.
+#include <algorithm>  // Do funkcji pomocniczych jak sortowanie.
+#include "MacierzKosztow.h"  // Nagłówek zawierający definicję klasy MacierzKosztow.
 
-struct Individual {
-    std::vector<int> path;
-    int cost;
+struct Osobnik {
+    // Reprezentacja osobnika w populacji
+    std::vector<int> sciezka;  // Wektor reprezentujący ścieżkę (porządek odwiedzanych miast).
+    int koszt;  // Całkowity koszt tej ścieżki (np. suma odległości pomiędzy miastami w ścieżce).
 };
 
-enum Mutation {
-    swapMut,
-    inverseMut
+// Typ wyliczeniowy dla rodzajów mutacji
+enum TypMutacji {
+    zamiana,  // Mutacja zamiany dwóch miast w ścieżce.
+    inwersja  // Mutacja inwersji (odwrócenie fragmentu ścieżki).
 };
 
-class GeneticAlgorithm {
+// Klasa implementująca algorytm genetyczny
+class GeneticAlgorithm{
 private:
-    MacierzKosztow &matrix; // Reference to cost matrix
-    std::list<std::pair<double, int>> bestSolutionFoundInTime;
+    MacierzKosztow& macierz;  // Referencja do macierzy kosztów (przechowuje odległości między miastami).
+    std::list<std::pair<double, int>> najlepszeRozwiazaniaWCzasie;  // Lista najlepszych rozwiązań w trakcie działania algorytmu (para: koszt, czas).
 
-    static int calculateTourCost(const std::vector<int>& path, int** matrix, int size);
-    static bool compareIndividuals(const Individual& a, const Individual& b);
+    // Funkcja pomocnicza do obliczania kosztu ścieżki
+    static int obliczKosztSciezki(const std::vector<int>& sciezka, int** macierz, int rozmiar);
 
-    void OXCrossover(const Individual& parent1, const Individual& parent2, Individual& child1, Individual& child2, int startPos, int endPos);
-    void swapMutation(Individual& individual);
-    void inversionMutation(Individual& individual);
-    Individual tournamentSelection(std::vector<Individual>& population);
+    // Funkcja porównująca dwóch osobników na podstawie ich kosztów
+    static bool porownajOsobniki(const Osobnik& a, const Osobnik& b);
+
+    // Funkcja realizująca krzyżowanie OX (Order Crossover)
+    void krzyzowanieOX(const Osobnik& rodzic1, const Osobnik& rodzic2, Osobnik& dziecko1, Osobnik& dziecko2, int poczatek, int koniec);
+
+    // Funkcja realizująca mutację typu zamiana
+    void mutacjaZamiany(Osobnik& osobnik);
+
+    // Funkcja realizująca mutację typu inwersja
+    void mutacjaInwersji(Osobnik& osobnik);
+
+    // Funkcja realizująca wybór osobnika przez turniej
+    Osobnik turniejWyboru(const std::vector<Osobnik>& populacja);
 
 public:
-    GeneticAlgorithm(MacierzKosztow& matrix);
-    std::vector<Individual> generateRandomPopulation(int populationSize);
-    Individual run(int stopTime, int populationSize, double mutationRate, double crossoverRate, Mutation mutationType);
-    const std::list<std::pair<double, int>>& getBestSolutionFoundInTime() const;
+    // Konstruktor, który inicjalizuje algorytm genetyczny
+    GeneticAlgorithm(MacierzKosztow& macierz);
 
-    std::vector<int> wykresBestLengths;
-    std::vector<double> wykresCzasyOfBestLengths;
-    std::vector<int> wykresLengths;
-    std::vector<double> wykresCzasyOfLengths;
+    // Funkcja do tworzenia początkowej, losowej populacji
+    std::vector<Osobnik> stworzLosowaPopulacje(int rozmiarPopulacji);
+
+    // Funkcja uruchamiająca główny algorytm genetyczny
+    Osobnik uruchom(int czasZatrzymania, int rozmiarPopulacji, double wspolczynnikMutacji, double wspolczynnikKrzyzowania, TypMutacji typMutacji);
+
+    // Funkcja zwracająca listę najlepszych rozwiązań w trakcie działania algorytmu
+    const std::list<std::pair<double, int>>& pobierzNajlepszeRozwiazaniaWCzasie() const;
+
 };
 
-#endif // GENETIC_ALGORITHM_H
+#endif // ALGORYTM_GENETYCZNY_H

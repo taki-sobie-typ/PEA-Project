@@ -8,11 +8,11 @@ int maxTime = 240000;
 int coolingType = 1;
 
 // Parametry algorytmu genetycznego
-int populationSize = 500;        // Rozmiar populacji
-int stopTime = 30;               // Czas trwania algorytmu w sekundach
+int populationSize = 400;        // Rozmiar populacji
+int stopTime = 120;               // Czas trwania algorytmu w sekundach
 double mutationRate = 0.01;       // Prawdopodobieństwo mutacji
 double crossoverRate = 0.8;     // Prawdopodobieństwo krzyżowania
-Mutation mutationType = inverseMut; // Typ mutacji (swap lub inversja)
+TypMutacji mutationType = inwersja; // Typ mutacji (swap lub inversja)
 
 // Central dispatcher for executing actions
 void Menu::executeAction(Action action) {
@@ -306,7 +306,7 @@ void Menu::ustawieniaGeneticAlgorithm() {
         cout << "2. Ustaw Stop Time (aktualnie: " << stopTime << ")" << endl;
         cout << "3. Ustaw Mutation Rate (aktualnie: " << mutationRate << ")" << endl;
         cout << "4. Ustaw Crossover Rate (aktualnie: " << crossoverRate << ")" << endl;
-        cout << "5. Ustaw Mutation Type (aktualnie: " << (mutationType == inverseMut ? "inverse" : "swap") << ")" << endl;
+        cout << "5. Ustaw Mutation Type (aktualnie: " << (mutationType == inwersja ? "inverse" : "swap") << ")" << endl;
         cout << "0. Powrot" << endl;
         cout << "Wybierz opcje: ";
         cin >> wybor;
@@ -334,9 +334,9 @@ void Menu::ustawieniaGeneticAlgorithm() {
                 cout << "Wybierz Mutation Type (1 = swap, 2 = inverse): ";
                 cin >> mutationChoice;
                 if (mutationChoice == 1) {
-                    mutationType = swapMut;
+                    mutationType = zamiana;
                 } else if (mutationChoice == 2) {
-                    mutationType = inverseMut;
+                    mutationType = inwersja;
                 } else {
                     cout << "Nieprawidlowy wybor. Pozostawiono obecny typ mutacji." << endl;
                 }

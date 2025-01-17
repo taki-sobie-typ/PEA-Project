@@ -139,33 +139,35 @@ void GrafManager::uruchomSimulatedAnnealing(double coolingFactor, int maxTime, i
 }
 
 // Metoda do uruchomienia algorytmu genetycznego
-void GrafManager::uruchomGeneticAlgorithm(int populationSize, int stopTime, double mutationRate, double crossoverRate, Mutation mutationType) {
+void GrafManager::uruchomGeneticAlgorithm(int populationSize, int stopTime, double mutationRate, double crossoverRate, TypMutacji mutationType) {
     if (macierzKosztow) {
         cout << "TO JEST GENETYCZNY" << endl;
         // Utwórz obiekt macierzy kosztów
         MacierzKosztow macierz(macierzKosztow, liczbaMiast);
 
-        // Parametry algorytmu genetycznego
+        /* Parametry algorytmu genetycznego
         populationSize = 600;        // Rozmiar populacji
         stopTime = 500;               // Czas trwania algorytmu w sekundach
         mutationRate = 0.01;       // Prawdopodobieństwo mutacji
         crossoverRate = 0.8;     // Prawdopodobieństwo krzyżowania
         mutationType = inverseMut; // Typ mutacji (swap lub inversja)
+        */
 
         // Utwórz obiekt algorytmu genetycznego
         GeneticAlgorithm geneticAlgorithm(macierz);
 
         // Uruchom algorytm
-        Individual bestIndividual = geneticAlgorithm.run(stopTime, populationSize, mutationRate, crossoverRate, mutationType);
+        Osobnik bestIndividual = geneticAlgorithm.uruchom(stopTime, populationSize, mutationRate, crossoverRate, mutationType);
 
         // Wyświetl najlepsze znalezione rozwiązanie
         cout << "Najlepsza znaleziona sciezka: ";
-        for (int city : bestIndividual.path) {
+        for (int city : bestIndividual.sciezka) {
             cout << city << " ";
         }
+        cout << bestIndividual.sciezka[0] << " ";
         cout << endl;
 
-        cout << "Koszt najlepszej sciezki: " << bestIndividual.cost << endl;
+        cout << "Koszt najlepszej sciezki: " << bestIndividual.koszt << endl;
     } else {
         cout << "Brak zaladowanej macierzy kosztow. Najpierw wczytaj lub wygeneruj graf." << endl;
     }
@@ -173,10 +175,10 @@ void GrafManager::uruchomGeneticAlgorithm(int populationSize, int stopTime, doub
 
 void GrafManager::testForReportGeneticAlgorithm() {
     // Lista rozmiarów populacji do przetestowania
-    std::vector<int> populationSizes = {200, 400, 600};
+    std::vector<int> populationSizes = {200, 400, 800, 1200, 1600};
 
     // Lista typów mutacji
-    std::vector<Mutation> mutationTypes = {swapMut, inverseMut};
+    std::vector<TypMutacji> mutationTypes = {zamiana, inwersja};
 
     // Liczba powtórzeń dla każdego przypadku
     const int repetitions = 10;
@@ -211,10 +213,10 @@ void GrafManager::testForReportGeneticAlgorithm() {
                     resultsCsv << populationSize << "\n";
                 }
 
-        for (Mutation mutationType : mutationTypes) {
+        for (TypMutacji mutationType : mutationTypes) {
 
                 if (resultsCsv.is_open()) {
-                    resultsCsv << (mutationType == swapMut ? "swapMut" : "inverseMut") << "\n";
+                    resultsCsv << (mutationType == zamiana ? "zamiana" : "inwersja") << "\n";
                 }
 
                 // Przechowywanie poprzedniego najlepszego wyniku (dla porównania w detailedCsv)
@@ -222,7 +224,7 @@ void GrafManager::testForReportGeneticAlgorithm() {
 
             for (int i = 0; i < repetitions; ++i) {
                 // Parametry algorytmu
-                int stopTime = 60;               // Czas trwania algorytmu w sekundach
+                int stopTime = 240;               // Czas trwania algorytmu w sekundach
                 double mutationRate = 0.01;       // Prawdopodobieństwo mutacji
                 double crossoverRate = 0.8;      // Prawdopodobieństwo krzyżowania
 
@@ -233,26 +235,26 @@ void GrafManager::testForReportGeneticAlgorithm() {
                 GeneticAlgorithm geneticAlgorithm(macierz);
 
                 // Uruchom algorytm genetyczny
-                Individual bestIndividual = geneticAlgorithm.run(
+                Osobnik bestIndividual = geneticAlgorithm.uruchom(
                     stopTime, populationSize, mutationRate, crossoverRate, mutationType
                 );
 
                 // Zapisz wynik do pliku CSV
                 if (resultsCsv.is_open()) {
-                    resultsCsv << bestIndividual.cost << "\n";
+                    resultsCsv << bestIndividual.koszt << "\n";
                 }
 
                 // Jeśli znaleziono lepsze rozwiązanie niż poprzednie, zapisz dane do szczegółowego CSV
-                if (bestIndividual.cost < previousBestLength) {
-                    previousBestLength = bestIndividual.cost;
+                if (bestIndividual.koszt < previousBestLength) {
+                    previousBestLength = bestIndividual.koszt;
                     // Plik z danymi do wykresów (znalezienie lepszego rozwiązania w czasie)
-                    string mutationTypeNow = mutationType == swapMut ? "swapMut" : "inverseMut";
+                    string mutationTypeNow = mutationType == zamiana ? "zamian" : "inwersja";
 
                     std::string detailedGeneticCsvFileActual = "genetic_algorithm_report_detailed_" + string(mutationTypeNow) + "_" + to_string(populationSize) + string(".csv");
 
                     std::ofstream detailedCsvNow(detailedGeneticCsvFileActual);
 
-                    const auto& bestSolutions = geneticAlgorithm.getBestSolutionFoundInTime();
+                    const auto& bestSolutions = geneticAlgorithm.pobierzNajlepszeRozwiazaniaWCzasie();
                     if (detailedCsvNow.is_open()) {
                             detailedCsvNow << "Time" << "," << "BestLength" << "\n";
                         for (const auto& solution : bestSolutions) {
