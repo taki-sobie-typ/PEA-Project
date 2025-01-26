@@ -34,7 +34,11 @@ std::vector<Osobnik> GeneticAlgorithm::stworzLosowaPopulacje(int rozmiarPopulacj
 
     std::vector<Osobnik> populacja(rozmiarPopulacji); // Wektor przechowujący populację.
     std::vector<int> bazaSciezki(liczbaMiast); // Wektor bazowy dla losowych ścieżek.
-    std::iota(bazaSciezki.begin(), bazaSciezki.end(), 0); // Wypełnienie wektora wartościami od 0 do liczbaMiast-1.
+
+    // Wypełnienie wektora bazowego wartościami od 0 do liczbaMiast - 1.
+    for (int i = 0; i < liczbaMiast; ++i) {
+        bazaSciezki[i] = i;
+    }
 
     std::mt19937 generator(std::random_device{}()); // Inicjalizacja generatora liczb losowych.
 
@@ -60,11 +64,17 @@ bool GeneticAlgorithm::porownajOsobniki(const Osobnik& a, const Osobnik& b) {
 // Funkcja losuje dwóch osobników, porównuje ich koszty i zwraca lepszego.
 Osobnik GeneticAlgorithm::turniejWyboru(const std::vector<Osobnik>& populacja) {
     static std::mt19937 generator(std::random_device{}()); // Generator liczb losowych.
-    std::uniform_int_distribution<int> dystrybucja(0, populacja.size() - 1); // Zakres losowania indeksów.
 
-    const Osobnik& pierwszy = populacja[dystrybucja(generator)]; // Pierwszy losowy osobnik.
-    const Osobnik& drugi = populacja[dystrybucja(generator)]; // Drugi losowy osobnik.
-    return porownajOsobniki(pierwszy, drugi) ? pierwszy : drugi; // Zwrócenie lepszego osobnika.
+    int indeksPierwszy = generator() % populacja.size(); // Losowy indeks pierwszego osobnika.
+    int indeksDrugi = generator() % populacja.size(); // Losowy indeks drugiego osobnika.
+
+    const Osobnik& pierwszy = populacja[indeksPierwszy];
+    const Osobnik& drugi = populacja[indeksDrugi];
+
+    if (porownajOsobniki(pierwszy, drugi)) {
+        return pierwszy; // Zwróć pierwszy osobnik, jeśli jest lepszy.
+    }
+    return drugi; // Zwróć drugi osobnik, jeśli jest lepszy.
 }
 
 // Funkcja implementująca krzyżowanie OX (Order Crossover).
@@ -76,8 +86,9 @@ void GeneticAlgorithm::krzyzowanieOX(const Osobnik& rodzic1, const Osobnik& rodz
     constexpr int PUSTY = -1; // Wartość oznaczająca pustą pozycję.
     int rozmiar = rodzic1.sciezka.size(); // Rozmiar ścieżki (liczba miast).
 
-    dziecko1.sciezka.assign(rozmiar, PUSTY); // Inicjalizacja pustego dziecka1.
-    dziecko2.sciezka.assign(rozmiar, PUSTY); // Inicjalizacja pustego dziecka2.
+    // Inicjalizacja pustych dzieci.
+    dziecko1.sciezka.assign(rozmiar, PUSTY);
+    dziecko2.sciezka.assign(rozmiar, PUSTY);
 
     // Kopiowanie wycinka z rodziców do dzieci.
     for (int i = poczatek; i <= koniec; ++i) {
@@ -85,26 +96,41 @@ void GeneticAlgorithm::krzyzowanieOX(const Osobnik& rodzic1, const Osobnik& rodz
         dziecko2.sciezka[i] = rodzic2.sciezka[i];
     }
 
-    // Lambda uzupełniająca pozostałe geny w ścieżkach dzieci.
-    auto uzupelnijDziecko = [&](Osobnik& dziecko, const Osobnik& rodzic, const std::unordered_set<int>& uzyteGeny, int pozycja) {
-        int indeks = pozycja;
-        for (int gen : rodzic.sciezka) { // Iteracja przez geny rodzica.
-            if (uzyteGeny.find(gen) == uzyteGeny.end()) { // Jeśli gen nie jest użyty.
-                while (dziecko.sciezka[indeks] != PUSTY) { // Znajdź pierwszą pustą pozycję.
-                    indeks = (indeks + 1) % rozmiar;
-                }
-                dziecko.sciezka[indeks] = gen; // Przypisz gen do pustej pozycji.
+    // Uzupełnienie brakujących genów dla dziecka1.
+    int indeks = (koniec + 1) % rozmiar;
+    for (int gen : rodzic2.sciezka) {
+        bool genJuzUzyty = false;
+        for (int i = poczatek; i <= koniec; ++i) {
+            if (dziecko1.sciezka[i] == gen) {
+                genJuzUzyty = true;
+                break;
             }
         }
-    };
+        if (!genJuzUzyty) {
+            while (dziecko1.sciezka[indeks] != PUSTY) {
+                indeks = (indeks + 1) % rozmiar;
+            }
+            dziecko1.sciezka[indeks] = gen;
+        }
+    }
 
-    // Tworzenie zbiorów użytych genów.
-    std::unordered_set<int> uzyteGeny1(dziecko1.sciezka.begin() + poczatek, dziecko1.sciezka.begin() + koniec + 1);
-    std::unordered_set<int> uzyteGeny2(dziecko2.sciezka.begin() + poczatek, dziecko2.sciezka.begin() + koniec + 1);
-
-    // Uzupełnienie brakujących genów w dzieciach.
-    uzupelnijDziecko(dziecko1, rodzic2, uzyteGeny1, (koniec + 1) % rozmiar);
-    uzupelnijDziecko(dziecko2, rodzic1, uzyteGeny2, (koniec + 1) % rozmiar);
+    // Uzupełnienie brakujących genów dla dziecka2.
+    indeks = (koniec + 1) % rozmiar;
+    for (int gen : rodzic1.sciezka) {
+        bool genJuzUzyty = false;
+        for (int i = poczatek; i <= koniec; ++i) {
+            if (dziecko2.sciezka[i] == gen) {
+                genJuzUzyty = true;
+                break;
+            }
+        }
+        if (!genJuzUzyty) {
+            while (dziecko2.sciezka[indeks] != PUSTY) {
+                indeks = (indeks + 1) % rozmiar;
+            }
+            dziecko2.sciezka[indeks] = gen;
+        }
+    }
 
     // Obliczenie kosztów dzieci.
     dziecko1.koszt = obliczKosztSciezki(dziecko1.sciezka, macierz.pobierzMacierzKosztow(), rozmiar);
@@ -113,15 +139,14 @@ void GeneticAlgorithm::krzyzowanieOX(const Osobnik& rodzic1, const Osobnik& rodz
 
 // Funkcja mutacji zamiany. Losowo wybiera dwa miasta i zamienia je miejscami w ścieżce osobnika.
 void GeneticAlgorithm::mutacjaZamiany(Osobnik& osobnik) {
-    static std::mt19937 generator(std::random_device{}());  // Tworzymy generator liczb losowych.
-    std::uniform_int_distribution<int> dystrybucja(0, osobnik.sciezka.size() - 1);  // Zakres dla indeksów miast w ścieżce.
+    static std::mt19937 generator(std::random_device{}()); // Generator liczb losowych.
 
     // Losujemy dwa różne indeksy miast
-    int i = dystrybucja(generator);
-    int j = dystrybucja(generator);
+    int indeksPierwszy = generator() % osobnik.sciezka.size(); // Losowy indeks pierwszego osobnika.
+    int indeksDrugi = generator() % osobnik.sciezka.size(); // Losowy indeks drugiego osobnika.
 
     // Zamieniamy miejscami miasta o tych indeksach w ścieżce
-    std::swap(osobnik.sciezka[i], osobnik.sciezka[j]);
+    std::swap(osobnik.sciezka[indeksPierwszy], osobnik.sciezka[indeksDrugi]);
 
     // Po wykonaniu mutacji, przeliczamy koszt ścieżki
     osobnik.koszt = obliczKosztSciezki(osobnik.sciezka, macierz.pobierzMacierzKosztow(), osobnik.sciezka.size());
@@ -129,18 +154,17 @@ void GeneticAlgorithm::mutacjaZamiany(Osobnik& osobnik) {
 
 // Funkcja mutacji inwersji. Losowo wybiera dwa indeksy i odwraca kolejność miast między tymi indeksami.
 void GeneticAlgorithm::mutacjaInwersji(Osobnik& osobnik) {
-    static std::mt19937 generator(std::random_device{}());  // Tworzymy generator liczb losowych.
-    std::uniform_int_distribution<int> dystrybucja(0, osobnik.sciezka.size() - 1);  // Zakres dla indeksów miast.
+    static std::mt19937 generator(std::random_device{}()); // Generator liczb losowych.
 
-    // Losujemy dwa różne indeksy w ścieżce
-    int i = dystrybucja(generator);
-    int j = dystrybucja(generator);
+    // Losujemy dwa różne indeksy miast
+    int indeksPierwszy = generator() % osobnik.sciezka.size(); // Losowy indeks pierwszego osobnika.
+    int indeksDrugi = generator() % osobnik.sciezka.size(); // Losowy indeks drugiego osobnika.
 
     // Upewniamy się, że i < j, aby nie zamienić miejscami tych samych indeksów
-    if (i > j) std::swap(i, j);
+    if (indeksPierwszy > indeksDrugi) std::swap(indeksPierwszy, indeksDrugi);
 
     // Odwracamy fragment ścieżki pomiędzy tymi dwoma indeksami
-    std::reverse(osobnik.sciezka.begin() + i, osobnik.sciezka.begin() + j + 1);
+    std::reverse(osobnik.sciezka.begin() + indeksPierwszy, osobnik.sciezka.begin() + indeksDrugi + 1);
 
     // Po wykonaniu mutacji, przeliczamy koszt ścieżki
     osobnik.koszt = obliczKosztSciezki(osobnik.sciezka, macierz.pobierzMacierzKosztow(), osobnik.sciezka.size());
@@ -196,30 +220,50 @@ Osobnik GeneticAlgorithm::uruchom(
             if (prawdopodobienstwo(generator) < wspolczynnikKrzyzowania) {
                 int poczatek = generator() % rodzic1.sciezka.size();
                 int koniec = generator() % rodzic1.sciezka.size();
-                if (poczatek > koniec) std::swap(poczatek, koniec);
+
+                if (poczatek > koniec) {
+                    std::swap(poczatek, koniec);
+                }
+
                 krzyzowanieOX(rodzic1, rodzic2, dziecko1, dziecko2, poczatek, koniec);
             }
 
             // Mutacja, jeśli prawdopodobieństwo jest spełnione
             if (prawdopodobienstwo(generator) < wspolczynnikMutacji) {
-                typMutacji == TypMutacji::zamiana ? mutacjaZamiany(dziecko1) : mutacjaInwersji(dziecko1);
+                if (typMutacji == TypMutacji::zamiana) {
+                    mutacjaZamiany(dziecko1);
+                }else {
+                    mutacjaInwersji(dziecko1);
+                }
             }
 
             if (prawdopodobienstwo(generator) < wspolczynnikMutacji) {
-                typMutacji == TypMutacji::zamiana ? mutacjaZamiany(dziecko2) : mutacjaInwersji(dziecko2);
+                if (typMutacji == TypMutacji::zamiana) {
+                    mutacjaZamiany(dziecko2);
+                } else {
+                    mutacjaInwersji(dziecko2);
+                }
             }
 
             // Umieszczamy dzieci w nowej populacji
             nowaPopulacja[i] = dziecko1;
-            if (i + 1 < rozmiarPopulacji) nowaPopulacja[i + 1] = dziecko2;
+            if (i + 1 < rozmiarPopulacji) {
+                nowaPopulacja[i + 1] = dziecko2;
+            }
         }
 
         // Aktualizujemy populację na nową
         populacja = nowaPopulacja;
     }
 
-    // Zwracamy najlepszy osobnik z populacji po zakończeniu algorytmu
-    return *std::min_element(populacja.begin(), populacja.end(), porownajOsobniki);
+    // Zwracamy najlepszego osobnika z populacji po zakończeniu algorytmu
+    Osobnik najlepszy = populacja[0];
+    for (const Osobnik& osobnik : populacja) {
+        if (osobnik.koszt < najlepszy.koszt) {
+            najlepszy = osobnik;
+        }
+    }
+    return najlepszy;
 }
 
 // Funkcja zwracająca listę najlepszych rozwiązań w czasie.

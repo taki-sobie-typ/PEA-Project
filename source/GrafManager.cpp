@@ -175,7 +175,7 @@ void GrafManager::uruchomGeneticAlgorithm(int populationSize, int stopTime, doub
 
 void GrafManager::testForReportGeneticAlgorithm() {
     // Lista rozmiarów populacji do przetestowania
-    std::vector<int> populationSizes = {200, 400, 800, 1200, 1600};
+    std::vector<int> populationSizes = {200, 400, 800};
 
     // Lista typów mutacji
     std::vector<TypMutacji> mutationTypes = {zamiana, inwersja};
@@ -223,6 +223,9 @@ void GrafManager::testForReportGeneticAlgorithm() {
                 int previousBestLength = INT_MAX;
 
             for (int i = 0; i < repetitions; ++i) {
+
+                cout << "GENETYCZNY TRWA ;" << i << ";" << mutationType << ";" << populationSize << ";" << endl;
+
                 // Parametry algorytmu
                 int stopTime = 240;               // Czas trwania algorytmu w sekundach
                 double mutationRate = 0.01;       // Prawdopodobieństwo mutacji
